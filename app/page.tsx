@@ -3,19 +3,42 @@ import { BlogPosts } from 'app/components/posts'
 export default function Page() {
   return (
     <section>
-      <h1 className="mb-8 text-2xl font-semibold tracking-tighter">
-        My Portfolio
+      <h1 className="mb-8 text-2xl font-semibold">
+        David Gan
       </h1>
-      <p className="mb-4">
-        {`I'm a Vim enthusiast and tab advocate, finding unmatched efficiency in
-        Vim's keystroke commands and tabs' flexibility for personal viewing
-        preferences. This extends to my support for static typing, where its
-        early error detection ensures cleaner code, and my preference for dark
-        mode, which eases long coding sessions by reducing eye strain.`}
+      <p className="mb-10">
+        {`i'm a software engineer based in LA`}
       </p>
-      <div className="my-8">
+      <p className="mb-10">
+        {`currently working at `}
+        <a 
+          href="https://manifold.xyz/" 
+          target="_blank" 
+          rel="noopener noreferrer"
+          className="underline text-blue-500 hover:text-blue-600"
+        >
+          {`manifold`}
+        </a>
+        {` where i help digital creators grow and monetize`}
+      </p>
+      <p className="mb-10">
+        {`before that i was a founding engineer at `}
+        <a 
+          href="https://altaninsights.com/" 
+          target="_blank" 
+          rel="noopener noreferrer"
+          className="underline text-blue-500 hover:text-blue-600"
+        >
+          {`altan insights`}
+        </a>
+        {` where I built a finance platform for alternative assets`}
+      </p>
+
+      {/* TODO fill in more experience about me */}
+
+      {/* <div className="my-8">
         <BlogPosts />
-      </div>
+      </div> */}
     </section>
   )
 }

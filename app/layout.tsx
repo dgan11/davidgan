@@ -46,7 +46,7 @@ export default function RootLayout({
       lang="en"
       className={cx(
         // 'text-black bg-white dark:text-white dark:bg-black',
-        'text-gray-700 bg-anthropic-secondary-bg',
+        'text-gray-700 bg-anthropic-bg',
         'tracking-wide',
         // 'font-sans'
       )}

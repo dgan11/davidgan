@@ -7,7 +7,7 @@ export default function Page() {
         David Gan
       </h1>
       <p className="mb-10">
-        {`i'm a software engineer based in LA`}
+        {`i'm a software engineer based in LA and originally from Texas`}
       </p>
       <p className="mb-10">
         {`currently working at `}

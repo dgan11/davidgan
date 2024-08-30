@@ -45,7 +45,7 @@ const config: Config = {
       },
       backgroundColor: {
         'anthropic-bg': 'rgba(250,250,248,255)',
-        'anthropic-secondary-bg': 'rgba(230,228,221,255)',
+        'anthropic-secondary-bg': 'rgba(230,228,221,200)',
         'f1': '#f1f1f1'
       },
       borderRadius: {

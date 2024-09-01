@@ -25,7 +25,8 @@ export default function EnhancedSpotifyEmbed() {
     const fetchTrackData = async () => {
       try {
         // First, try to fetch currently playing
-        const currentlyPlayingResponse = await axios.get('/api/spotify/currently-playing');
+        const timestamp = new Date().getTime();
+        const currentlyPlayingResponse = await axios.get(`/api/spotify/currently-playing?t=${timestamp}`);
         if (currentlyPlayingResponse.data && currentlyPlayingResponse.data.item) {
           const currentTrack = currentlyPlayingResponse.data.item;
           setTrackData({

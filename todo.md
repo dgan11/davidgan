@@ -1,0 +1,4 @@
+- [ ] finish integrating spotify
+- [ ] center text in small view
+- [ ] add more experience stuff
+- [ ] add posthog 

@@ -63,6 +63,10 @@ class SpotifyClient {
   getCurrentlyPlaying() {
     return this.getRequest('https://api.spotify.com/v1/me/player/currently-playing');
   }
+
+  getRecentlyPlayed() {
+    return this.getRequest('https://api.spotify.com/v1/me/player/recently-played');
+  }
 }
 
 export default SpotifyClient;

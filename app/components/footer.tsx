@@ -38,7 +38,7 @@ export default function Footer() {
             className="flex items-center transition-all hover:text-neutral-600"
             rel="noopener noreferrer"
             target="_blank"
-            href="https://github.com/vercel/next.js"
+            href="https://github.com/dgan11"
           >
             <p className="mr-1 h-7 relative top-[14px]">github</p>
             <ArrowIcon />

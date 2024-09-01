@@ -10,6 +10,7 @@ interface Track {
 }
 
 export default function CurrentlyPlaying() {
+  console.log('🌱 CurrentlyPlaying');
   const [track, setTrack] = useState<Track | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -19,6 +20,7 @@ export default function CurrentlyPlaying() {
       try {
         // Make a request to our API route
         const response = await axios.get('/api/spotify/currently-playing');
+        console.log('🌱 response.data.item: ', response.data.item);
         // Update the track state with the fetched data
         setTrack(response.data.item);
       } catch (err) {

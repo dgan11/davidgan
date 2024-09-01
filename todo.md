@@ -2,3 +2,4 @@
 - [ ] center text in small view
 - [ ] add more experience stuff
 - [ ] add posthog 
+- [ ] hook up domain name davidgan.com

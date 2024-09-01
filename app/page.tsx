@@ -1,5 +1,6 @@
 import { BlogPosts } from 'app/components/posts'
 import CurrentlyPlaying from './components/CurrentlyPlaying'
+import EnhancedSpotifyEmbed from './components/EnhancedSpotifyEmbed'
 
 export default function Page() {
   return (
@@ -22,7 +23,7 @@ export default function Page() {
         </a>
         {` where i help digital creators grow and monetize`}
       </p>
-      <p className="mb-10">
+      <p className="mb-12">
         {`before that i was a founding engineer at `}
         <a 
           href="https://altaninsights.com/" 
@@ -35,12 +36,18 @@ export default function Page() {
         {` where I built a finance platform for alternative assets`}
       </p>
 
+      {/* Custom Spotify Embed */}
+      {/* <CurrentlyPlaying /> */}
+      <div className="flex justify-center items-center mb-12">
+        <EnhancedSpotifyEmbed />
+      </div>
+
       {/* TODO fill in more experience about me */}
 
       {/* <div className="my-8">
         <BlogPosts />
       </div> */}
-      <CurrentlyPlaying />
+
     </section>
   )
 }

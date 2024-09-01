@@ -12,11 +12,13 @@ class SpotifyClient {
   }
 
   async getRequest(url: string) {
+    // Check if token is expired or missing, refresh if needed
     if (!this.accessToken || this.isTokenExpired()) {
       await this.refreshAccessToken();
     }
 
     try {
+      // Make the actual request to Spotify API
       const response = await axios.get(url, {
         headers: { 'Authorization': `Bearer ${this.accessToken}` }
       });
@@ -33,6 +35,7 @@ class SpotifyClient {
 
   private async refreshAccessToken() {
     try {
+      // Request a new access token using the refresh token
       const response = await axios.post('https://accounts.spotify.com/api/token', 
         new URLSearchParams({
           grant_type: 'refresh_token',
@@ -47,18 +50,22 @@ class SpotifyClient {
         }
       );
 
+      // Update the access token and expiration time
       this.accessToken = response.data.access_token;
       this.expiresAt = Date.now() + response.data.expires_in * 1000;
-      
-      // Here, you might want to save the new access token to your database
     } catch (error) {
       console.error('Error refreshing access token:', error);
       throw error;
     }
   }
 
+  // Method to get currently playing track
   getCurrentlyPlaying() {
     return this.getRequest('https://api.spotify.com/v1/me/player/currently-playing');
+  }
+
+  getRecentlyPlayed() {
+    return this.getRequest('https://api.spotify.com/v1/me/player/recently-played?limit=1');
   }
 }
 

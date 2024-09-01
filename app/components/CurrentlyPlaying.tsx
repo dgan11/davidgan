@@ -17,8 +17,10 @@ export default function CurrentlyPlaying() {
   useEffect(() => {
     const fetchCurrentlyPlaying = async () => {
       try {
+        // Make a request to our API route
         const response = await axios.get('/api/spotify/currently-playing');
-        console.log('🌱 resonse.data: ', response.data);
+        console.log('🌱 response.data: ', response.data);
+        // Update the track state with the fetched data
         setTrack(response.data.item);
       } catch (err) {
         setError('Failed to fetch currently playing track');
@@ -27,17 +29,23 @@ export default function CurrentlyPlaying() {
       }
     };
 
+    // Fetch data immediately
     fetchCurrentlyPlaying();
     // Set up an interval to fetch every 30 seconds
     const interval = setInterval(fetchCurrentlyPlaying, 30000);
 
+    // Clean up the interval on component unmount
     return () => clearInterval(interval);
   }, []);
 
+  // Render loading state
   if (isLoading) return <div>Loading...</div>;
+  // Render error state
   if (error) return <div>Error: {error}</div>;
+  // Render when no track is playing
   if (!track) return <div>No track currently playing</div>;
 
+  // Render the currently playing track
   return (
     <div>
       <h2>Currently Playing</h2>

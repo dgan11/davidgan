@@ -1,4 +1,5 @@
 import { BlogPosts } from 'app/components/posts'
+import CurrentlyPlaying from './components/CurrentlyPlaying'
 
 export default function Page() {
   return (
@@ -39,6 +40,7 @@ export default function Page() {
       {/* <div className="my-8">
         <BlogPosts />
       </div> */}
+      <CurrentlyPlaying />
     </section>
   )
 }

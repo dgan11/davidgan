@@ -65,7 +65,7 @@ class SpotifyClient {
   }
 
   getRecentlyPlayed() {
-    return this.getRequest('https://api.spotify.com/v1/me/player/recently-played');
+    return this.getRequest('https://api.spotify.com/v1/me/player/recently-played?limit=1');
   }
 }
 

@@ -22,18 +22,33 @@ export default function EnhancedSpotifyEmbed() {
   const isPlaying = useSpotifyEmbedState(trackData?.spotifyLink ?? '');
 
   useEffect(() => {
-    const fetchRecentlyPlayed = async () => {
+    const fetchTrackData = async () => {
       try {
-        const response = await axios.get('/api/spotify/recently-played');
-        setTrackData(response.data);
+        // First, try to fetch currently playing
+        const currentlyPlayingResponse = await axios.get('/api/spotify/currently-playing');
+        if (currentlyPlayingResponse.data && currentlyPlayingResponse.data.item) {
+          const currentTrack = currentlyPlayingResponse.data.item;
+          setTrackData({
+            spotifyLink: currentTrack.external_urls.spotify,
+            lastPlayedTime: new Date().toISOString(), // Set to current time
+            albumCoverUrl: currentTrack.album.images[0].url,
+            trackName: currentTrack.name,
+            artistName: currentTrack.artists[0].name,
+          });
+        } else {
+          // If no currently playing track, fetch recently played
+          const recentlyPlayedResponse = await axios.get('/api/spotify/recently-played');
+          console.log('🧪 recently played response: ', recentlyPlayedResponse.data[0]);
+          setTrackData(recentlyPlayedResponse.data);
+        }
       } catch (err) {
-        setError('Failed to fetch recently played track');
+        setError('Failed to fetch track data');
       } finally {
         setIsLoading(false);
       }
     };
 
-    fetchRecentlyPlayed();
+    fetchTrackData();
   }, []);
 
   if (isLoading) return <div></div>;

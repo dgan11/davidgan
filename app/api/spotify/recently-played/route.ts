@@ -6,7 +6,7 @@ export async function GET() {
 
   try {
     const data = await client.getRecentlyPlayed();
-    console.log('🍔 recently played data.items: ', data.items);
+    // console.log('🍔 recently played data.items[0]: ', data.items[0]);
     if (data.items && data.items.length > 0) {
       const mostRecent = data.items[0];
       return NextResponse.json({

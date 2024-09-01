@@ -37,8 +37,7 @@ export default function Page() {
       </p>
 
       {/* Custom Spotify Embed */}
-      <CurrentlyPlaying />
-
+      {/* <CurrentlyPlaying /> */}
       <div className="flex justify-center items-center mb-12">
         <EnhancedSpotifyEmbed />
       </div>

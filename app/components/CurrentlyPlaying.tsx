@@ -19,7 +19,6 @@ export default function CurrentlyPlaying() {
       try {
         // Make a request to our API route
         const response = await axios.get('/api/spotify/currently-playing');
-        console.log('🌱 response.data: ', response.data);
         // Update the track state with the fetched data
         setTrack(response.data.item);
       } catch (err) {

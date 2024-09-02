@@ -28,7 +28,7 @@ export default function EnhancedSpotifyEmbed() {
         // const timestamp = new Date().getTime();
         const currentlyPlayingResponse = await axios.get(`/api/spotify/currently-playing`);
 
-        console.log('🧪 currently playing response item: ', currentlyPlayingResponse.data.item);
+        console.log('🎶 currently playing response data: ', currentlyPlayingResponse.data);
 
         if (currentlyPlayingResponse.data && currentlyPlayingResponse.data.item) {
           const currentTrack = currentlyPlayingResponse.data.item;
@@ -42,7 +42,7 @@ export default function EnhancedSpotifyEmbed() {
         } else {
           // If no currently playing track, fetch recently played
           const recentlyPlayedResponse = await axios.get('/api/spotify/recently-played');
-          console.log('🧪 recently played response: ', recentlyPlayedResponse.data[0]);
+          console.log('🎺 recently played response: ', recentlyPlayedResponse.data[0]);
           setTrackData(recentlyPlayedResponse.data);
         }
       } catch (err) {

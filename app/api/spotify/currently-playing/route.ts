@@ -15,7 +15,6 @@ export async function GET() {
   try {
     // Use the client to fetch currently playing track
     const data = await client.getCurrentlyPlaying();
-    // console.log('🍟 api data: ', data);
     // Return the data as JSON response
     return NextResponse.json(data, { headers });
   } catch (error) {

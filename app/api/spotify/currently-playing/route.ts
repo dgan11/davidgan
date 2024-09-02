@@ -1,8 +1,6 @@
 import { NextResponse } from 'next/server';
 import SpotifyClient from 'app/utils/SpotifyClient';
 
-export const fetchCache = 'force-no-store';
-
 export async function GET() {
   // Create a new SpotifyClient instance using the refresh token
   const client = new SpotifyClient(process.env.SPOTIFY_REFRESH_TOKEN!);

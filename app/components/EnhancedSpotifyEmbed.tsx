@@ -64,7 +64,8 @@ export default function EnhancedSpotifyEmbed() {
   const isListeningNow = minutesSinceLastPlayed <= 10;
   const playStatus = isListeningNow
     ? "Listening now"
-    : `Last played ${formatDistanceToNow(lastPlayedDate, { addSuffix: true })}`;
+    : `Last played ${formatDistanceToNow(lastPlayedDate)}`;
+
 
   return (
     <div className="bg-f1 rounded-xl shadow-md overflow-hidden">

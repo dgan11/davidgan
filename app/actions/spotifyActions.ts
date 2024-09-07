@@ -1,26 +1,36 @@
-import { NextResponse } from 'next/server';
+'use server';
+
 import SpotifyClient from 'app/utils/SpotifyClient';
 
-export async function GET() {
+export async function getCurrentlyPlaying() {
   const client = new SpotifyClient(process.env.SPOTIFY_REFRESH_TOKEN!);
+  try {
+    const data = await client.getCurrentlyPlaying();
+    return data;
+  } catch (error) {
+    console.error('Error fetching currently playing:', error);
+    throw new Error('Failed to fetch currently playing');
+  }
+}
 
+export async function getRecentlyPlayed() {
+  const client = new SpotifyClient(process.env.SPOTIFY_REFRESH_TOKEN!);
   try {
     const data = await client.getRecentlyPlayed();
-    // console.log('🍔 recently played data.items[0]: ', data.items[0]);
     if (data.items && data.items.length > 0) {
       const mostRecent = data.items[0];
-      return NextResponse.json({
+      return {
         spotifyLink: mostRecent.track.external_urls.spotify,
         lastPlayedTime: mostRecent.played_at,
         albumCoverUrl: mostRecent.track.album.images[0].url,
         trackName: mostRecent.track.name,
         artistName: mostRecent.track.artists[0].name,
-      });
+      };
     } else {
-      return NextResponse.json({ error: 'No recently played tracks found' }, { status: 404 });
+      throw new Error('No recently played tracks found');
     }
   } catch (error) {
     console.error('Error fetching recently played:', error);
-    return NextResponse.json({ error: 'Failed to fetch recently played' }, { status: 500 });
+    throw new Error('Failed to fetch recently played');
   }
 }

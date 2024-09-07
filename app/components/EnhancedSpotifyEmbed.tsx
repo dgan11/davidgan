@@ -5,7 +5,7 @@ import { formatDistanceToNow, differenceInMinutes } from 'date-fns';
 import { Spotify } from 'react-spotify-embed';
 import SpinningRecord from './SpinningRecord';
 import useSpotifyEmbedState from '../hooks/useSpotifyEmbedState';
-import axios from 'axios';
+import { getCurrentlyPlaying, getRecentlyPlayed } from '../actions/spotifyActions';
 
 interface SpotifyTrackData {
   spotifyLink: string;
@@ -25,24 +25,23 @@ export default function EnhancedSpotifyEmbed() {
     const fetchTrackData = async () => {
       try {
         // First, try to fetch currently playing
-        // const timestamp = new Date().getTime();
-        const currentlyPlayingResponse = await axios.get(`/api/spotify/currently-playing`);
-        console.log('🎶 currently playing response data: ', currentlyPlayingResponse.data);
+        const currentlyPlayingData = await getCurrentlyPlaying();
+        console.log('🎶 currently playing data: ', currentlyPlayingData);
 
-        if (currentlyPlayingResponse.data && currentlyPlayingResponse.data.item) {
-          const currentTrack = currentlyPlayingResponse.data.item;
+        if (currentlyPlayingData && currentlyPlayingData.item) {
+          const currentTrack = currentlyPlayingData.item;
           setTrackData({
             spotifyLink: currentTrack.external_urls.spotify,
-            lastPlayedTime: new Date().toISOString(), // Set to current time
+            lastPlayedTime: new Date().toISOString(),
             albumCoverUrl: currentTrack.album.images[0].url,
             trackName: currentTrack.name,
             artistName: currentTrack.artists[0].name,
           });
         } else {
           // If no currently playing track, fetch recently played
-          const recentlyPlayedResponse = await axios.get('/api/spotify/recently-played');
-          console.log('🎺 recently played response: ', recentlyPlayedResponse.data);
-          setTrackData(recentlyPlayedResponse.data);
+          const recentlyPlayedData = await getRecentlyPlayed();
+          console.log('🎺 recently played data: ', recentlyPlayedData);
+          setTrackData(recentlyPlayedData);
         }
       } catch (err) {
         setError('Failed to fetch track data');
@@ -65,7 +64,6 @@ export default function EnhancedSpotifyEmbed() {
   const playStatus = isListeningNow
     ? "Listening now"
     : `Last played ${formatDistanceToNow(lastPlayedDate)}`;
-
 
   return (
     <div className="bg-f1 rounded-xl shadow-md overflow-hidden">

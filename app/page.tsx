@@ -1,6 +1,6 @@
-import { BlogPosts } from 'app/components/posts'
-import CurrentlyPlaying from './components/CurrentlyPlaying'
+// import { BlogPosts } from 'app/components/posts'
 import EnhancedSpotifyEmbed from './components/EnhancedSpotifyEmbed'
+import WIPExperienceSection from './components/WIPExperienceSection'
 
 export default function Page() {
   return (
@@ -37,7 +37,6 @@ export default function Page() {
       </p>
 
       {/* Custom Spotify Embed */}
-      {/* <CurrentlyPlaying /> */}
       <div className="flex justify-center items-center mb-12">
         <EnhancedSpotifyEmbed />
       </div>
@@ -47,6 +46,7 @@ export default function Page() {
       {/* <div className="my-8">
         <BlogPosts />
       </div> */}
+      <WIPExperienceSection />
 
     </section>
   )

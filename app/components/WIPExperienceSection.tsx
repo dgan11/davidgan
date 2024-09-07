@@ -28,8 +28,8 @@ const manifoldProjectTiles = [
     type: 'image'
   },
   {
-    src: 'https://utfs.io/f/0cab5656-dfa3-4f8e-a819-d0bda41be1b2-dsr4ul.gif',
-    href: 'https://twitter.com/nftnow/status/1770647178454679602',
+    src: 'https://utfs.io/f/29bab749-687a-478d-b95f-4d48ca2981e1-1fze5x.png',
+    href: 'https://www.fewoworld.io/',
     type: 'image'
   },
   {
@@ -38,8 +38,8 @@ const manifoldProjectTiles = [
     type: 'image'
   },
   {
-    src: 'https://utfs.io/f/29bab749-687a-478d-b95f-4d48ca2981e1-1fze5x.png',
-    href: 'https://www.fewoworld.io/',
+    src: 'https://utfs.io/f/0cab5656-dfa3-4f8e-a819-d0bda41be1b2-dsr4ul.gif',
+    href: 'https://twitter.com/nftnow/status/1770647178454679602',
     type: 'image'
   },
 ];

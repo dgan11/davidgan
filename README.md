@@ -1,3 +1,1 @@
-### My Website
-
-some highlights
+### davidgan.com

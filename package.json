@@ -19,6 +19,7 @@
     "lucide-react": "^0.438.0",
     "next": "14.2.7",
     "next-mdx-remote": "^4.4.1",
+    "posthog-js": "^1.160.3",
     "react": "^18",
     "react-dom": "^18",
     "react-spotify-embed": "^2.0.4",

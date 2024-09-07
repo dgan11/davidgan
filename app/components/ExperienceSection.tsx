@@ -11,42 +11,42 @@ const experiences: ExperienceItem[] = [
   {
     company: 'Manifold.xyz',
     period: '2021 - now',
-    description: '',
+    description: 'helped creators and brands use NFTs',
   },
   {
     company: 'Altan Insights',
     period: '2020 - 2021',
-    description: "",
-  },
-  {
-    company: 'Oracle',
-    period: '2019 - 2020',
-    description: "",
+    description: "aggregated market data for assets like these and helped investors understand them better",
   },
 ];
 
-const graphiteImages = [
+// Interactive cards for Manifold projects
+const manifoldProjectTiles = [
   {
-    src: 'https://utfs.io/f/28635fd9-9b5b-4874-9f1c-606ef5bbe662-iwevjv.jpeg',
-    href: 'https://example.com/image1'
+    src: 'https://utfs.io/f/1ae0bb1d-9164-48d4-9ed2-6c8d59b0190d-b11qqo.com-crop-final.gif',
+    href: 'https://kith.com/collections/kith-for-invisible-friends-collection?srsltid=AfmBOoqAWbeqMKeykky5HNG97UTXW_do8aVWRrtddQ7tHepUJwbQ8a6S',
+    type: 'image'
   },
   {
-    src: 'https://dilxwvfkfup17.cloudfront.net/eyJpdiI6Ik5FZzVWL1VpdFNIa2hFNFYzMzNtT3c9PSIsInZhbHVlIjoiNlMrb1NCM2taWnN3L1Bpc3lLTWI3bXlDNkRWcHFYNHBpczV5SmtWYmdXYUdnQnZTYzJxRHV0SmliZXVrZjhqSkoyN2hURTgyVUg3Y3g1Tzd6a1ZKNXc9PSIsIm1hYyI6IjEwOGNmZWM4MGJkYzBiNjNlMGIyMjZjYjM1MGMzNTZhNmNiMzViODRmMTA5NzUwZmUxYmZjN2NiODE5ZTMxNjEiLCJ0YWciOiIifQ==',
-    href: 'https://example.com/image2'
+    src: 'https://utfs.io/f/29bab749-687a-478d-b95f-4d48ca2981e1-1fze5x.png',
+    href: 'https://www.fewoworld.io/',
+    type: 'image'
   },
   {
-    src: '/graphite/3.png',
-    href: 'https://example.com/image3'
+    src: 'https://utfs.io/f/2422b9df-aaad-45df-bd8f-2ab51333a11a-a18da0.png',
+    href: 'https://www.niftygateway.com/collections/sam-spratt-the-monument-game/',
+    type: 'image'
   },
   {
-    src: '/graphite/4.png',
-    href: 'https://example.com/image4'
+    src: 'https://utfs.io/f/0cab5656-dfa3-4f8e-a819-d0bda41be1b2-dsr4ul.gif',
+    href: 'https://twitter.com/nftnow/status/1770647178454679602',
+    type: 'image'
   },
 ];
 
 export default function ExperienceSection() {
   return (
-    <div className="flex flex-col gap-y-6">
+    <div className="flex flex-col gap-y-8">
       <h3 className="text-md font-semibold">Experience</h3>
       {experiences.map((exp, index) => (
         <div key={exp.company} className="flex flex-col w-full">
@@ -56,12 +56,16 @@ export default function ExperienceSection() {
           </div>
           <p className="opacity-75">{exp.description}</p>
           {index === 1 && (
+             <MixedMediaSlider />
+          )}
+          {index === 0 && (
             <div className="flex flex-row -space-x-9 min-[430px]:-space-x-6 min-[500px]:-space-x-8 mt-4">
-              {graphiteImages.map((image, i) => (
+              {manifoldProjectTiles.map((image, i) => (
                 <div
-                  key={i}
-                  className={`w-28 h-28 min-[475px]:w-32 min-[475px]:h-32 min-[500px]:w-36 min-[500px]:h-36 
-                              bg-[#F5F4F9] border border-[#E6E6E6] rounded-md overflow-hidden 
+                  key={i}   
+                  className={`w-32 h-32 min-[475px]:w-36 min-[475px]:h-36 min-[500px]:w-40 min-[500px]:h-40
+                    bg-anthropic-secondary-bg/40 border-anthropic-secondary-bg/40 
+                               border rounded-md overflow-hidden 
                               shadow-[0_1px_2px_rgba(0,0,0,0.04)] hover:shadow-[0_6px_6px_rgba(0,0,0,0.08)] 
                               hover:-translate-y-1 transition duration-200 ease-in-out 
                               ${i % 2 === 0 ? 'rotate-6' : '-rotate-6'}`}
@@ -81,7 +85,6 @@ export default function ExperienceSection() {
           )}
         </div>
       ))}
-      <MixedMediaSlider />
     </div>
   );
 }

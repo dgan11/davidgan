@@ -1,5 +1,10 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 
+/**
+ * Fix to pause and resume the Spotify embed when the user pauses and resumes a song
+ * have to catch the event (network log) when the user pressses pause/play
+ */
+
 function useSpotifyEmbedState(spotifyLink: string) {
   const [isPlaying, setIsPlaying] = useState(false);
   const iframeRef = useRef<HTMLIFrameElement | null>(null);

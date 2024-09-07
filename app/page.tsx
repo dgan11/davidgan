@@ -1,6 +1,6 @@
 // import { BlogPosts } from 'app/components/posts'
 import EnhancedSpotifyEmbed from './components/EnhancedSpotifyEmbed'
-import WIPExperienceSection from './components/WIPExperienceSection'
+import ExperienceSection from './components/ExperienceSection'
 
 export default function Page() {
   return (
@@ -41,13 +41,10 @@ export default function Page() {
         <EnhancedSpotifyEmbed />
       </div>
 
-      {/* TODO fill in more experience about me */}
-
+      <ExperienceSection />
       {/* <div className="my-8">
         <BlogPosts />
       </div> */}
-      <WIPExperienceSection />
-
     </section>
   )
 }

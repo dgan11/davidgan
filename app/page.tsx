@@ -8,11 +8,23 @@ export default function Page() {
       <h1 className="mb-8 text-2xl font-semibold">
         David Gan
       </h1>
-      <p className="mb-10">
+      <p className="mb-6">
         {`i'm a software engineer based in LA and originally from Texas`}
       </p>
-      <p className="mb-10">
-        {`currently working at `}
+      <p className="mb-6">
+        {`currently working at coinbase (`}
+        <a 
+          href="https://base.org" 
+          target="_blank" 
+          rel="noopener noreferrer"
+          className="underline text-blue-500 hover:text-blue-600"
+        >
+          {`base`}
+        </a>
+        {`) building on-chain wechat`}
+      </p>
+      <p className="mb-6">
+        {`previously worked at `}
         <a 
           href="https://manifold.xyz/" 
           target="_blank" 
@@ -21,7 +33,7 @@ export default function Page() {
         >
           {`manifold`}
         </a>
-        {` where i help digital creators grow and monetize`}
+        {` where i helped digital creators grow and monetize`}
       </p>
       <p className="mb-12">
         {`before that i was a founding engineer at `}

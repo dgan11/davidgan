@@ -9,8 +9,13 @@ interface ExperienceItem {
 
 const experiences: ExperienceItem[] = [
   {
+    company: 'Coinbase',
+    period: '2024 - now',
+    description: 'building on-chain wechat',
+  },
+  {
     company: 'Manifold.xyz',
-    period: '2021 - now',
+    period: '2021 - 2024',
     description: 'helped creators and brands use NFTs',
   },
   {
@@ -55,10 +60,10 @@ export default function ExperienceSection() {
             <p className="opacity-50 ml-1">{exp.period}</p>
           </div>
           <p className="opacity-75">{exp.description}</p>
-          {index === 1 && (
+          {index === 2 && (
              <MixedMediaSlider />
           )}
-          {index === 0 && (
+          {index === 1 && (
             <div className="flex flex-row -space-x-9 min-[430px]:-space-x-6 min-[500px]:-space-x-8 mt-4">
               {manifoldProjectTiles.map((image, i) => (
                 <div

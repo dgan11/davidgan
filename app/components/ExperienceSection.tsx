@@ -11,7 +11,7 @@ const experiences: ExperienceItem[] = [
   {
     company: 'Anysphere',
     period: '2025 - now',
-    description: 'building Cursor AI',
+    description: 'building cursor',
   },
   {
     company: 'Coinbase',
@@ -65,6 +65,19 @@ export default function ExperienceSection() {
             <p className="opacity-50 ml-1">{exp.period}</p>
           </div>
           <p className="opacity-75">{exp.description}</p>
+          {index === 0 && (
+            <div className="">
+              <video 
+                autoPlay 
+                loop 
+                muted 
+                playsInline
+                className="w-20"
+              >
+                <source src="https://pj55yltg5v.ufs.sh/f/GEQYflcXsdIYGCatiicXsdIYfbtW7MPAwgNvyn0ZRJ8jpcqo" type="video/mp4" />
+              </video>
+            </div>
+          )}
           {index === 3 && (
              <MixedMediaSlider />
           )}

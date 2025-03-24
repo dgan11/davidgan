@@ -28,7 +28,7 @@ export default function Page() {
           rel="noopener noreferrer"
           className="underline text-blue-500 hover:text-blue-600"
         >
-          {`cursor AI`}
+          {`cursor`}
         </a>
       </p>
       <p className="mb-12">

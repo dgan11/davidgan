@@ -9,9 +9,14 @@ interface ExperienceItem {
 
 const experiences: ExperienceItem[] = [
   {
+    company: 'Anysphere',
+    period: '2025 - now',
+    description: 'building Cursor AI',
+  },
+  {
     company: 'Coinbase',
-    period: '2024 - now',
-    description: 'building on-chain wechat',
+    period: '2024-2025',
+    description: 'built on-chain wechat',
   },
   {
     company: 'Manifold.xyz',
@@ -60,10 +65,10 @@ export default function ExperienceSection() {
             <p className="opacity-50 ml-1">{exp.period}</p>
           </div>
           <p className="opacity-75">{exp.description}</p>
-          {index === 2 && (
+          {index === 3 && (
              <MixedMediaSlider />
           )}
-          {index === 1 && (
+          {index === 2 && (
             <div className="flex flex-row -space-x-9 min-[430px]:-space-x-6 min-[500px]:-space-x-8 mt-4">
               {manifoldProjectTiles.map((image, i) => (
                 <div

@@ -12,7 +12,27 @@ export default function Page() {
         {`i'm a software engineer based in LA and originally from Texas`}
       </p>
       <p className="mb-6">
-        {`currently working at coinbase (`}
+        {`currently working at `}
+        <a 
+          href="https://anysphere.inc/" 
+          target="_blank" 
+          rel="noopener noreferrer"
+          className="underline text-blue-500 hover:text-blue-600"
+        >
+          {`anysphere`}
+        </a>
+        {` building `}
+        <a 
+          href="https://www.cursor.com/" 
+          target="_blank" 
+          rel="noopener noreferrer"
+          className="underline text-blue-500 hover:text-blue-600"
+        >
+          {`cursor AI`}
+        </a>
+      </p>
+      <p className="mb-12">
+        {`previously worked at coinbase (`}
         <a 
           href="https://base.org" 
           target="_blank" 
@@ -21,10 +41,7 @@ export default function Page() {
         >
           {`base`}
         </a>
-        {`) building on-chain wechat`}
-      </p>
-      <p className="mb-6">
-        {`previously worked at `}
+        {`) building on-chain wechat, `}
         <a 
           href="https://manifold.xyz/" 
           target="_blank" 
@@ -33,10 +50,7 @@ export default function Page() {
         >
           {`manifold`}
         </a>
-        {` where i helped digital creators grow and monetize`}
-      </p>
-      <p className="mb-12">
-        {`before that i was a founding engineer at `}
+        {` where i helped digital creators monetize, and `}
         <a 
           href="https://altaninsights.com/" 
           target="_blank" 

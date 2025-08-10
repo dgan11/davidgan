@@ -94,12 +94,17 @@ export default function ExperienceSection() {
                               ${i % 2 === 0 ? 'rotate-6' : '-rotate-6'}`}
                 >
                   <a href={image.href} target="_blank" rel="noopener noreferrer" className="no-opacity-hover">
-                    <img
+                    <Image
                       src={image.src}
-                      alt=""
+                      alt={`Manifold project ${i + 1}`}
                       width={144}
                       height={144}
                       className="w-full h-full object-cover"
+                      priority={i === 0}
+                      loading={i === 0 ? 'eager' : 'lazy'}
+                      placeholder="blur"
+                      blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWEREiMxUf/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
+                      sizes="(max-width: 475px) 128px, (max-width: 500px) 144px, 160px"
                     />
                   </a>
                 </div>

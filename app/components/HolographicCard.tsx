@@ -1,7 +1,7 @@
-/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import React, { useState, useEffect, useRef } from 'react';
+import Image from 'next/image';
 import './HolographicCard.css';
 
 interface HoloCardProps {
@@ -9,14 +9,26 @@ interface HoloCardProps {
   altText: string;
   color1: string;
   color2: string;
-  isLarger?: boolean; // New prop
+  isLarger?: boolean;
+  priority?: boolean;
+  loading?: 'lazy' | 'eager';
 }
 
-const HoloCard: React.FC<HoloCardProps> = ({ imageUrl, altText, color1, color2, isLarger = false }) => {
+const HoloCard: React.FC<HoloCardProps> = ({ 
+  imageUrl, 
+  altText, 
+  color1, 
+  color2, 
+  isLarger = false, 
+  priority = false,
+  loading = 'lazy'
+}) => {
   const cardRef = useRef<HTMLDivElement>(null);
   const [isHovered, setIsHovered] = useState(false);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [cardSize, setCardSize] = useState({ width: 0, height: 0 });
+  const [isLoading, setIsLoading] = useState(true);
+  const [hasError, setHasError] = useState(false);
 
   useEffect(() => {
     if (cardRef.current) {
@@ -81,7 +93,34 @@ const HoloCard: React.FC<HoloCardProps> = ({ imageUrl, altText, color1, color2, 
         ...calculateStyles(),
       } as unknown as React.CSSProperties}
     >
-      <img src={imageUrl} alt={altText} className="card-image" />
+      {isLoading && (
+        <div className="card-skeleton">
+          <div className="skeleton-shimmer" />
+        </div>
+      )}
+      {hasError ? (
+        <div className="card-error">
+          <span>Failed to load image</span>
+        </div>
+      ) : (
+        <Image 
+          src={imageUrl} 
+          alt={altText} 
+          fill
+          className="card-image"
+          priority={priority}
+          loading={loading}
+          onLoad={() => setIsLoading(false)}
+          onError={() => {
+            setIsLoading(false);
+            setHasError(true);
+          }}
+          sizes={isLarger ? 
+            "(max-width: 599px) 80vw, (min-width: 600px) 28vw" : 
+            "(max-width: 599px) 71.5vw, (min-width: 600px) 18vw"
+          }
+        />
+      )}
     </div>
   );
 };

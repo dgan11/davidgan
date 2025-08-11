@@ -74,23 +74,23 @@ export default function Page() {
       </div>
 
       {/* Tab Navigation */}
-      <div className="flex gap-x-6 mb-8 border-b">
+      <div className="flex gap-6 mb-8 -ml-3">
         <button
           onClick={() => setActiveTab('experience')}
-          className={`pb-2 transition-colors ${
+          className={`text-base font-medium px-3 py-2 rounded-lg transition-all duration-200 ${
             activeTab === 'experience'
-              ? 'text-black border-b-2 border-black'
-              : 'text-gray-500 hover:text-gray-700'
+              ? 'text-black bg-gray-100 bg-opacity-60 backdrop-blur'
+              : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50'
           }`}
         >
           Experience
         </button>
         <button
           onClick={() => setActiveTab('writing')}
-          className={`pb-2 transition-colors ${
+          className={`text-base font-medium px-3 py-2 rounded-lg transition-all duration-200 ${
             activeTab === 'writing'
-              ? 'text-black border-b-2 border-black'
-              : 'text-gray-500 hover:text-gray-700'
+              ? 'text-black bg-gray-100 bg-opacity-60 backdrop-blur'
+              : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50'
           }`}
         >
           Writing

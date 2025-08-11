@@ -4,33 +4,33 @@
 
 /* Custom Scrollbar Styles */
 .custom-scrollbar {
-  scrollbar-width: none; /* Firefox */
-  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: thin; /* Firefox */
+  scrollbar-color: transparent transparent;
 }
 
 .custom-scrollbar::-webkit-scrollbar {
-  width: 0px;
-  background: transparent;
-}
-
-.custom-scrollbar:hover {
-  scrollbar-width: thin; /* Firefox */
-}
-
-.custom-scrollbar:hover::-webkit-scrollbar {
   width: 8px;
 }
 
-.custom-scrollbar:hover::-webkit-scrollbar-track {
-  background: rgba(0, 0, 0, 0.1);
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
   border-radius: 10px;
 }
 
-.custom-scrollbar:hover::-webkit-scrollbar-thumb {
-  background: rgba(0, 0, 0, 0.3);
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: transparent;
   border-radius: 10px;
 }
 
-.custom-scrollbar:hover::-webkit-scrollbar-thumb:hover {
-  background: rgba(0, 0, 0, 0.5);
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(210, 180, 140, 0.3);
+}
+
+/* Show scrollbar only when hovering over the scrollbar area */
+.custom-scrollbar::-webkit-scrollbar-track:hover {
+  background: rgba(245, 222, 179, 0.2);
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(205, 133, 63, 0.4);
 }

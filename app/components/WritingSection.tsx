@@ -213,8 +213,8 @@ export default function WritingSection() {
               height: hoveredId === writing.id ? 300 : 60,
             }}
             transition={{
-              duration: 0.6,
-              ease: [0.16, 1, 0.3, 1],
+              duration: 0.5,
+              ease: [0.4, 0, 0.2, 1],
             }}
             onMouseEnter={() => setHoveredId(writing.id)}
             onMouseLeave={() => setHoveredId(null)}
@@ -228,8 +228,8 @@ export default function WritingSection() {
                 scale: hoveredId === writing.id ? 1 : 1.2,
               }}
               transition={{
-                duration: 0.6,
-                ease: [0.16, 1, 0.3, 1],
+                duration: 0.5,
+                ease: [0.4, 0, 0.2, 1],
               }}
             >
               <Image
@@ -256,9 +256,11 @@ export default function WritingSection() {
                 delay: hoveredId === writing.id ? 0 : 0.3,
               }}
             >
-              <h4 className="text-white font-medium text-sm whitespace-nowrap">
-                {writing.title}
-              </h4>
+              <div className="bg-white bg-opacity-20 backdrop-blur rounded px-2 py-0.5 border border-white border-opacity-30">
+                <h4 className="text-white font-medium text-sm whitespace-nowrap drop-shadow-md">
+                  {writing.title}
+                </h4>
+              </div>
             </motion.div>
 
             {/* Expanded content - Only visible on hover */}
@@ -377,12 +379,10 @@ export default function WritingSection() {
 
                     {/* Title (only show in image mode) */}
                     {viewMode === "image" && (
-                      <div className="absolute bottom-4 left-4">
-                        <div className="bg-black bg-opacity-50 backdrop-blur-sm rounded-lg px-3 py-2">
-                          <h3 className="text-xl font-semibold text-white">
-                            {selectedWriting.title}
-                          </h3>
-                        </div>
+                      <div className="absolute bottom-4 left-4 text-white">
+                        <h3 className="text-xl font-semibold">
+                          {selectedWriting.title}
+                        </h3>
                       </div>
                     )}
                   </div>

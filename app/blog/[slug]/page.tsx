@@ -4,6 +4,7 @@ import { formatDate, getBlogPosts } from 'app/blog/utils'
 import { baseUrl } from 'app/sitemap'
 import TTSPlayer from 'app/components/TTSPlayer'
 import WordHighlighter from 'app/components/WordHighlighter'
+import Link from 'next/link'
 
 export async function generateStaticParams() {
   let posts = getBlogPosts()
@@ -84,6 +85,12 @@ export default function Blog({ params }) {
           }),
         }}
       />
+      <div className="mb-4">
+        <Link href="/" className="text-sm text-neutral-600 hover:text-neutral-800 inline-flex items-center gap-1">
+          <span>←</span>
+          <span>back</span>
+        </Link>
+      </div>
       <h1 className="title font-semibold text-2xl tracking-tighter">
         {post.metadata.title}
       </h1>

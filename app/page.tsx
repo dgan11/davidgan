@@ -64,12 +64,12 @@ export default function Page() {
       </p>
 
       {/* Custom Spotify Embed */}
-      <div className="flex justify-center items-center mb-12">
+      <div className="flex justify-center items-center mb-20">
         <EnhancedSpotifyEmbed />
       </div>
 
       {/* Blog Section (homepage) */}
-      <section className="mb-10">
+      <section className="mb-20">
         <div className="mb-4">
           <h3 className="text-md font-semibold">Blog</h3>
         </div>

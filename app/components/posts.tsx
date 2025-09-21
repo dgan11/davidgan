@@ -41,7 +41,7 @@ export function BlogPosts({ variant = 'default' }: { variant?: 'default' | 'comp
                 <p
                   className={
                     isCompact
-                      ? 'text-sm md:text-base tracking-tight font-semibold font-serif underline-offset-[4px] decoration-neutral-300 group-hover:underline'
+                      ? 'text-sm md:text-base tracking-tight font-medium font-sans underline-offset-[4px] decoration-neutral-300 group-hover:underline'
                       : 'text-2xl md:text-xl tracking-tight group-hover:underline'
                   }
                 >

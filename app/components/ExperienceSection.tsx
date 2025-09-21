@@ -56,14 +56,15 @@ const manifoldProjectTiles = [
 
 export default function ExperienceSection() {
   return (
-    <div className="flex flex-col gap-y-8">
-      <h3 className="text-md font-semibold">Experience</h3>
-      {experiences.map((exp, index) => (
-        <div key={exp.company} className="flex flex-col w-full">
-          <div className="flex flex-row gap-x-1 items-center">
-            <h4 className="font-medium">{exp.company}</h4>
-            <p className="opacity-50 ml-1">{exp.period}</p>
-          </div>
+    <div className="flex flex-col">
+      <h3 className="text-md font-semibold mb-4">Experience</h3>
+      <div className="flex flex-col gap-y-8">
+        {experiences.map((exp, index) => (
+          <div key={exp.company} className="flex flex-col w-full">
+            <div className="flex flex-row gap-x-1 items-center">
+              <h4 className="font-medium">{exp.company}</h4>
+              <p className="opacity-50 ml-1">{exp.period}</p>
+            </div>
           <p className="opacity-75">{exp.description}</p>
           {index === 0 && (
             <div className="">
@@ -114,5 +115,6 @@ export default function ExperienceSection() {
         </div>
       ))}
     </div>
+  </div>
   );
 }

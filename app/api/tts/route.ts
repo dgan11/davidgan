@@ -1,0 +1,134 @@
+import { NextRequest } from 'next/server'
+import { getBlogPosts } from 'app/blog/utils'
+import fs from 'fs'
+import path from 'path'
+import crypto from 'crypto'
+
+function mdxToPlainText(mdx: string): string {
+  // very light markdown cleanup for TTS
+  return mdx
+    .replace(/```[\s\S]*?```/g, '') // remove code blocks
+    .replace(/`([^`]+)`/g, '$1') // inline code
+    .replace(/^>\s?/gm, '') // blockquotes
+    .replace(/^#{1,6}\s*/gm, '') // headings
+    .replace(/!\[[^\]]*\]\([^)]*\)/g, '') // images
+    .replace(/\[([^\]]+)\]\([^)]*\)/g, '$1') // links -> text
+    .replace(/\*\*([^*]+)\*\*/g, '$1') // bold
+    .replace(/\*([^*]+)\*/g, '$1') // italic
+    .replace(/\n{3,}/g, '\n\n') // collapse newlines
+    .trim()
+}
+
+export async function POST(req: NextRequest) {
+  try {
+    const apiKey = process.env.SPEECHIFY_API_KEY
+    if (!apiKey) {
+      return new Response('Missing SPEECHIFY_API_KEY', { status: 500 })
+    }
+
+    const { slug } = await req.json()
+    if (!slug) {
+      return new Response('Missing slug', { status: 400 })
+    }
+
+    const post = getBlogPosts().find((p) => p.slug === slug)
+    if (!post) {
+      return new Response('Post not found', { status: 404 })
+    }
+
+    const text = `${post.metadata.title}. ${mdxToPlainText(post.content)}`
+
+    // Build content-based cache key so audio regenerates only when content changes
+    const hash = crypto.createHash('sha1').update(text).digest('hex').slice(0, 10)
+    const cacheDir = path.join(process.cwd(), 'public', 'audio', 'blog')
+    const hashedName = `${post.slug}-${hash}.mp3`
+    const hashedPath = path.join(cacheDir, hashedName)
+    const stableName = `${post.slug}.mp3`
+    const stablePath = path.join(cacheDir, stableName)
+
+    // Serve from cache if exists
+    // Prefer stable pre-generated file
+    if (fs.existsSync(stablePath)) {
+      const buffer = await fs.promises.readFile(stablePath)
+      return new Response(new Uint8Array(buffer), {
+        status: 200,
+        headers: {
+          'Content-Type': 'audio/mpeg',
+          'Cache-Control': 'public, max-age=31536000, immutable',
+        },
+      })
+    }
+
+    // Or a previously cached hashed file
+    if (fs.existsSync(hashedPath)) {
+      const buffer = await fs.promises.readFile(hashedPath)
+      return new Response(new Uint8Array(buffer), {
+        status: 200,
+        headers: {
+          'Content-Type': 'audio/mpeg',
+          'Cache-Control': 'public, max-age=31536000, immutable',
+        },
+      })
+    }
+
+    // Use SSML to set pitch and rate to ~-4%
+    const ssml = `<speak><prosody rate="-4%" pitch="-4%">${text}</prosody></speak>`
+
+    const voiceId = '38c70d56-1551-4019-af88-96d614837dd7'
+    const resp = await fetch('https://api.sws.speechify.com/v1/audio/speech', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${apiKey}`,
+      },
+      body: JSON.stringify({
+        input: ssml,
+        voice_id: voiceId,
+        audio_format: 'mp3',
+        model: 'simba-english',
+        language: 'en-US',
+      }),
+    })
+
+    if (!resp.ok) {
+      const errTxt = await resp.text()
+      return new Response(`Speechify error: ${errTxt}`, { status: 502 })
+    }
+
+    const data = await resp.json()
+    const base64 = data.audio_data as string
+    if (!base64) {
+      return new Response('No audio_data returned', { status: 502 })
+    }
+
+    const buffer = Buffer.from(base64, 'base64')
+
+    // Ensure cache dir and write file
+    await fs.promises.mkdir(cacheDir, { recursive: true })
+    await fs.promises.writeFile(hashedPath, new Uint8Array(buffer))
+    // Also write/update stable name for direct serving
+    await fs.promises.writeFile(stablePath, new Uint8Array(buffer))
+
+    // Optionally, clean old cached files for this slug
+    try {
+      const files = await fs.promises.readdir(cacheDir)
+      await Promise.all(
+        files
+          .filter((f) => f.startsWith(`${post.slug}-`) && f !== hashedName)
+          .map((f) => fs.promises.unlink(path.join(cacheDir, f)))
+      )
+    } catch {}
+
+    return new Response(new Uint8Array(buffer), {
+      status: 200,
+      headers: {
+        'Content-Type': 'audio/mpeg',
+        'Cache-Control': 'public, max-age=31536000, immutable',
+      },
+    })
+  } catch (e: any) {
+    return new Response(`TTS error: ${e?.message || 'unknown'}`, { status: 500 })
+  }
+}
+
+

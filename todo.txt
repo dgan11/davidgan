@@ -1,0 +1,53 @@
+Blog feature plan (Thinking Machines style)
+
+Decisions
+- URL structure: /blog/<slug>
+- Authoring: MDX
+- Fields: title, description, date, slug, hero image, content
+- RSS: not needed (keep SEO + OG + sitemap)
+- Visual: match reference closely
+
+MDX schema (frontmatter)
+- title: string
+- description: string (maps to summary today)
+- date: ISO string (maps to publishedAt today)
+- slug: string (derived from filename by default)
+- hero: string (relative path to image)
+
+Plugin stack (Next MDX, RSC-compatible)
+- TOC: derive from headings (we already add ids via `app/components/mdx.tsx`)
+- Footnotes: remark-gfm (supports footnotes) + custom renderer for margin notes
+- Slugs: use existing slugify in mdx.tsx for anchors
+- Code: sugar-high (already in place)
+- Optional: rehype-autolink-headings if we remove custom heading wrapper later
+
+Index layout spec
+- Page title and subtitle matching Connectionism styles
+- List posts with: date (left), title (link), subtitle/author line (optional), right-aligned chevron
+- Generous vertical rhythm; hover underline on title
+- Pagination optional (start with all posts)
+
+Post layout spec
+- 3-column grid: left sticky TOC, center prose, right margin for footnotes
+- On <lg screens: hide TOC; footnotes render centered beneath relevant content
+- Active section highlighting in TOC based on heading intersection
+- Hero image (optional) full-width above article; date below title
+
+1) Draft blog plan and create todo.txt [completed]
+2) Decide blog IA and URLs (use /blog/<slug>) [completed]
+3) Define MDX content model and frontmatter fields [completed]
+4) Choose/confirm MDX pipeline and plugins (TOC, footnotes, slugs, code) [completed]
+5) Implement blog index page matching Connectionism layout [in_progress]
+6) Implement dynamic post page with 3-column responsive layout
+7) Generate sticky left Table of Contents with active section highlighting
+8) Render footnotes as margin notes on desktop and centered on mobile
+9) Wire routing and unique slugs; support redirects if slug changes
+10) Build shared prose components (typography, callouts, figures, code blocks)
+11) Add SEO, OpenGraph, and sitemap integration for posts (no RSS)
+12) Add analytics events (page views, outbound links)
+13) Migrate existing posts (e.g., vim.mdx) to new format and validate
+14) Update navigation to surface blog above Experience
+15) Add tests (unit for MDX, e2e layout, visual baseline)
+16) Accessibility pass (headings, landmarks, contrast, skip links)
+17) Performance pass (image optimization, font loading, lazy embeds)
+18) Optional: tags/categories and search

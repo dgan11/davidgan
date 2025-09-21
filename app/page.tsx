@@ -1,6 +1,7 @@
 // import { BlogPosts } from 'app/components/posts'
 import EnhancedSpotifyEmbed from './components/EnhancedSpotifyEmbed'
 import ExperienceSection from './components/ExperienceSection'
+import { BlogPosts } from './components/posts'
 
 export default function Page() {
   return (
@@ -66,6 +67,14 @@ export default function Page() {
       <div className="flex justify-center items-center mb-12">
         <EnhancedSpotifyEmbed />
       </div>
+
+      {/* Blog Section (homepage) */}
+      <section className="mb-10">
+        <div className="mb-4">
+          <h3 className="text-md font-semibold">Blog</h3>
+        </div>
+        <BlogPosts variant="compact" />
+      </section>
 
       <ExperienceSection />
       {/* <div className="my-8">

@@ -181,7 +181,12 @@ export default function WordHighlighter({
               const idx = Math.min(i, m.length - 1)
               const t = (m[idx].start_time || 0) * scale
               audioEl.currentTime = Math.max(0, t - 0.05) // small lead
-              if (audioEl.paused) audioEl.play().catch(() => {})
+              if (audioEl.paused) {
+                // Do not autoplay; also clear any active highlight
+                wordsEls.forEach((e) => e.classList.remove('tts-word-active'))
+              } else {
+                audioEl.play().catch(() => {})
+              }
             })
           })
           cleanup = startWithMarks(m)
@@ -190,7 +195,11 @@ export default function WordHighlighter({
           wordsEls.forEach((w, i) => {
             w.addEventListener('click', () => {
               audioEl.currentTime = i * avg()
-              if (audioEl.paused) audioEl.play().catch(() => {})
+              if (audioEl.paused) {
+                wordsEls.forEach((e) => e.classList.remove('tts-word-active'))
+              } else {
+                audioEl.play().catch(() => {})
+              }
             })
           })
           cleanup = startWithAverage()
@@ -199,7 +208,11 @@ export default function WordHighlighter({
         wordsEls.forEach((w, i) => {
           w.addEventListener('click', () => {
             audioEl.currentTime = i * avg()
-            if (audioEl.paused) audioEl.play().catch(() => {})
+            if (audioEl.paused) {
+              wordsEls.forEach((e) => e.classList.remove('tts-word-active'))
+            } else {
+              audioEl.play().catch(() => {})
+            }
           })
         })
         cleanup = startWithAverage() 

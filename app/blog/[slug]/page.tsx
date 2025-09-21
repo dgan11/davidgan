@@ -3,6 +3,7 @@ import { CustomMDX } from 'app/components/mdx'
 import { formatDate, getBlogPosts } from 'app/blog/utils'
 import { baseUrl } from 'app/sitemap'
 import TTSPlayer from 'app/components/TTSPlayer'
+import WordHighlighter from 'app/components/WordHighlighter'
 
 export async function generateStaticParams() {
   let posts = getBlogPosts()
@@ -98,6 +99,7 @@ export default function Blog({ params }) {
       <article className="prose">
         <CustomMDX source={post.content} />
       </article>
+      <WordHighlighter slug={post.slug} pace={1.15} offsetSec={0} includeTitle={true} />
     </section>
   )
 }

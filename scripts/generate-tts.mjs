@@ -72,6 +72,7 @@ async function synthesizeToFile({ slug, title, content }) {
   const text = `${title}. ${mdxToPlainText(content)}`
   const ssml = `<speak><prosody rate="-4%" pitch="-4%">${text}</prosody></speak>`
   const outPath = path.join(OUT_DIR, `${slug}.mp3`)
+  const marksPath = path.join(OUT_DIR, `${slug}.marks.json`)
 
   const resp = await fetch('https://api.sws.speechify.com/v1/audio/speech', {
     method: 'POST',
@@ -85,6 +86,7 @@ async function synthesizeToFile({ slug, title, content }) {
       audio_format: 'mp3',
       model: 'simba-english',
       language: 'en-US',
+      options: { speech_marks: true },
     }),
   })
 
@@ -99,6 +101,10 @@ async function synthesizeToFile({ slug, title, content }) {
 
   await fs.promises.mkdir(OUT_DIR, { recursive: true })
   await fs.promises.writeFile(outPath, buffer)
+  try {
+    const marks = data.speech_marks?.chunks || data.speech_marks || null
+    if (marks) await fs.promises.writeFile(marksPath, JSON.stringify(marks))
+  } catch {}
   return outPath
 }
 

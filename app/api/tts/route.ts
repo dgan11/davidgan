@@ -19,6 +19,29 @@ function mdxToPlainText(mdx: string): string {
     .trim()
 }
 
+export async function GET(req: NextRequest) {
+  // Return speech marks JSON if it exists
+  const { searchParams } = new URL(req.url)
+  const slug = searchParams.get('slug') || ''
+  if (!slug) {
+    return new Response('Missing slug', { status: 400 })
+  }
+  try {
+    const cacheDir = path.join(process.cwd(), 'public', 'audio', 'blog')
+    const marksPath = path.join(cacheDir, `${slug}.marks.json`)
+    if (!fs.existsSync(marksPath)) {
+      return new Response('Marks not found', { status: 404 })
+    }
+    const json = await fs.promises.readFile(marksPath, 'utf-8')
+    return new Response(json, {
+      status: 200,
+      headers: { 'Content-Type': 'application/json', 'Cache-Control': 'public, max-age=31536000, immutable' },
+    })
+  } catch (e: any) {
+    return new Response(`Marks error: ${e?.message || 'unknown'}`, { status: 500 })
+  }
+}
+
 export async function POST(req: NextRequest) {
   try {
     const apiKey = process.env.SPEECHIFY_API_KEY
@@ -87,6 +110,7 @@ export async function POST(req: NextRequest) {
         audio_format: 'mp3',
         model: 'simba-english',
         language: 'en-US',
+        options: { speech_marks: true },
       }),
     })
 
@@ -108,6 +132,15 @@ export async function POST(req: NextRequest) {
     await fs.promises.writeFile(hashedPath, new Uint8Array(buffer))
     // Also write/update stable name for direct serving
     await fs.promises.writeFile(stablePath, new Uint8Array(buffer))
+
+    // Persist speech marks if available
+    try {
+      const marks = data.speech_marks?.chunks || data.speech_marks || null
+      if (marks) {
+        const marksPath = path.join(cacheDir, `${post.slug}.marks.json`)
+        await fs.promises.writeFile(marksPath, JSON.stringify(marks))
+      }
+    } catch {}
 
     // Optionally, clean old cached files for this slug
     try {

@@ -2,6 +2,17 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Reading highlight for TTS sync */
+.reading-highlight {
+  background: linear-gradient(90deg, rgba(253,246,178,0.6), rgba(253,246,178,0.2));
+  transition: background-color 200ms ease;
+}
+
+.tts-word-active {
+  background-color: rgba(253, 230, 138, 0.9);
+  border-radius: 3px;
+}
+
 @keyframes float {
   0% {
     transform: translateY(0px);

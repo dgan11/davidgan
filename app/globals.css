@@ -13,6 +13,16 @@
   border-radius: 3px;
 }
 
+/* Interactive word hover + pointer */
+.tts-word {
+  cursor: pointer;
+  transition: background-color 120ms ease;
+  border-radius: 3px;
+}
+.tts-word:hover {
+  background-color: rgba(239, 228, 135, 0.35);
+}
+
 @keyframes float {
   0% {
     transform: translateY(0px);

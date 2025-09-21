@@ -162,19 +162,48 @@ export default function WordHighlighter({
       }
     }
 
-    // Click to jump to a word
-    wordsEls.forEach((w, i) => {
-      w.addEventListener('click', () => {
-        audioEl.currentTime = i * avg()
-        if (audioEl.paused) audioEl.play().catch(() => {})
-      })
-    })
+    // Click handling will be attached below depending on mode (marks vs average)
 
     let cleanup: (() => void) | undefined
     if (preferMarks) {
       loadMarks().then((m) => {
-        cleanup = m ? startWithMarks(m) : startWithAverage()
-      }).catch(() => { cleanup = startWithAverage() })
+        if (m) {
+          // For marks, seek to exact timestamp for clicked word
+          let scale = 1
+          if (markUnit === 'ms') scale = 0.001
+          else if (markUnit === 's') scale = 1
+          else {
+            const maxStart = Math.max(...m.map((x: any) => x.start_time || 0))
+            scale = maxStart > 120 ? 0.001 : 1
+          }
+          wordsEls.forEach((w, i) => {
+            w.addEventListener('click', () => {
+              const idx = Math.min(i, m.length - 1)
+              const t = (m[idx].start_time || 0) * scale
+              audioEl.currentTime = Math.max(0, t - 0.05) // small lead
+              if (audioEl.paused) audioEl.play().catch(() => {})
+            })
+          })
+          cleanup = startWithMarks(m)
+        } else {
+          // Fallback: average mapping
+          wordsEls.forEach((w, i) => {
+            w.addEventListener('click', () => {
+              audioEl.currentTime = i * avg()
+              if (audioEl.paused) audioEl.play().catch(() => {})
+            })
+          })
+          cleanup = startWithAverage()
+        }
+      }).catch(() => { 
+        wordsEls.forEach((w, i) => {
+          w.addEventListener('click', () => {
+            audioEl.currentTime = i * avg()
+            if (audioEl.paused) audioEl.play().catch(() => {})
+          })
+        })
+        cleanup = startWithAverage() 
+      })
     } else {
       cleanup = startWithAverage()
     }

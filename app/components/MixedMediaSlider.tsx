@@ -104,13 +104,9 @@ export default function MixedMediaSlider() {
   }, [])
 
   return (
-    <div className="w-full max-w-xl mx-auto p-2 md:p-4 relative font-mono">
-      {/* <div className="mb-4">
-        <h1 className="text-2xl font-bold">Altan Insights</h1>
-        <p className="text-lg text-muted-foreground">Worked on this</p>
-      </div> */}
-      <div 
-        className="relative overflow-hidden cursor-grab active:cursor-grabbing"
+    <div className="w-full max-w-sm -mt-1 pb-4">
+      <div
+        className="relative overflow-x-hidden overflow-y-visible cursor-grab active:cursor-grabbing"
         onMouseDown={handleMouseDown}
         onMouseLeave={handleMouseLeave}
         onMouseUp={handleMouseUp}
@@ -118,8 +114,8 @@ export default function MixedMediaSlider() {
       >
         <div
           ref={scrollRef}
-          className="flex overflow-x-auto space-x-4 scrollbar-hide"
-          style={{ scrollSnapType: 'x mandatory', scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+          className="flex overflow-x-auto gap-3 scrollbar-hide snap-x snap-mandatory items-start pt-1 pb-12"
+          style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
         >
           <style jsx>{`
             div::-webkit-scrollbar {
@@ -127,18 +123,20 @@ export default function MixedMediaSlider() {
             }
           `}</style>
           {slideData.map((slide, index) => (
-            <div key={index} className="flex-shrink-0 scroll-snap-align-start pb-12">
+            <div key={index} className="flex-shrink-0 snap-start">
               {slide.type === 'card' && slide.imageUrl && (
                 <HoloCard
                   imageUrl={slide.imageUrl}
                   altText={slide.altText || ''}
                   color1={slide.color1 || ''}
                   color2={slide.color2 || ''}
-                  isLarger={true}
+                  isLarger={false}
+                  priority={index < 2}
+                  loading={index < 2 ? 'eager' : 'lazy'}
                 />
               )}
               {slide.type === 'model' && slide.modelSrc && (
-                <div className="w-[300px] h-[400px] model-viewer-container">
+                <div className="w-[180px] h-[240px] model-viewer-container rounded-lg overflow-hidden bg-[#e8e6e0]">
                   <ModelViewer src={slide.modelSrc} />
                 </div>
               )}
@@ -146,30 +144,30 @@ export default function MixedMediaSlider() {
           ))}
         </div>
       </div>
-      <Button
-        onClick={() => {
-          const scrollAmount = window.innerWidth <= 599 ? -380 : -300;
-          scrollRef.current?.scrollBy({ left: scrollAmount, behavior: 'smooth' });
-        }}
-        variant="ghost"
-        size="sm"
-        className="absolute bottom-4 mleft-4 z-10 bg-gray-200 bg-opacity-30 hover:bg-opacity-70 transition-opacity"
-        disabled={isAtStart}
-      >
-        <ChevronLeft className="h-3 w-3" />
-      </Button>
-      <Button
-        onClick={() => {
-          const scrollAmount = window.innerWidth <= 599 ? 380 : 300;
-          scrollRef.current?.scrollBy({ left: scrollAmount, behavior: 'smooth' });
-        }}
-        variant="ghost"
-        size="sm"
-        className="absolute bottom-4 right-2 md:right-4 z-10 bg-gray-200 bg-opacity-30 hover:bg-opacity-70 transition-opacity"
-        disabled={isAtEnd}
-      >
-        <ChevronRight className="h-3 w-3" />
-      </Button>
+      <div className="flex justify-center gap-2 mt-3">
+        <Button
+          onClick={() => {
+            scrollRef.current?.scrollBy({ left: -200, behavior: 'smooth' });
+          }}
+          variant="ghost"
+          size="sm"
+          className="h-7 w-7 p-0 text-[#888] hover:text-[#111] hover:bg-[#eae6e0]"
+          disabled={isAtStart}
+        >
+          <ChevronLeft className="h-4 w-4" />
+        </Button>
+        <Button
+          onClick={() => {
+            scrollRef.current?.scrollBy({ left: 200, behavior: 'smooth' });
+          }}
+          variant="ghost"
+          size="sm"
+          className="h-7 w-7 p-0 text-[#888] hover:text-[#111] hover:bg-[#eae6e0]"
+          disabled={isAtEnd}
+        >
+          <ChevronRight className="h-4 w-4" />
+        </Button>
+      </div>
     </div>
   )
 }

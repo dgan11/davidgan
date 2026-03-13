@@ -15,7 +15,9 @@ interface SpotifyTrackData {
   artistName: string;
 }
 
-export default function EnhancedSpotifyEmbed() {
+type SpotifyVariant = 'default' | 'minimal' | 'compact';
+
+export default function EnhancedSpotifyEmbed({ variant = 'default' }: { variant?: SpotifyVariant }) {
   const [trackData, setTrackData] = useState<SpotifyTrackData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -64,6 +66,49 @@ export default function EnhancedSpotifyEmbed() {
   const playStatus = isListeningNow
     ? "Listening now"
     : `Last played ${formatDistanceToNow(lastPlayedDate)}`;
+
+  if (variant === 'compact') {
+    return (
+      <div
+        className="max-w-[340px] mx-auto rounded-xl overflow-hidden shadow-sm border border-[#e8e6e2]"
+        style={{ backgroundColor: '#f0eeeb' }}
+      >
+        <a
+          href={trackData.spotifyLink}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center gap-3 px-3 py-2.5 hover:bg-[#ebe9e6] transition-colors"
+        >
+          <div className="flex-shrink-0 text-[#999]">
+            <SpinningRecord size={80} image={trackData.albumCoverUrl} isPlaying={isPlaying} />
+          </div>
+          <div className="min-w-0 flex-1">
+            <p className="text-[13px] text-[#333] truncate font-medium">
+              {trackData.trackName}
+            </p>
+            <p className="text-[12px] text-[#666] truncate italic">
+              {trackData.artistName}
+            </p>
+          </div>
+        </a>
+        <Spotify
+          link={trackData.spotifyLink}
+          width={340}
+          height={80}
+          frameBorder={0}
+          allow="encrypted-media"
+        />
+      </div>
+    );
+  }
+
+  if (variant === 'minimal') {
+    return (
+      <div className="rounded-xl overflow-hidden shadow-sm">
+        <Spotify wide link={trackData.spotifyLink} frameBorder="0" allow="encrypted-media" />
+      </div>
+    );
+  }
 
   return (
     <div className="bg-f1 rounded-xl shadow-md overflow-hidden">

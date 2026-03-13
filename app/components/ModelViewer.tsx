@@ -62,7 +62,7 @@ const ModelViewer: React.FC<ModelViewerProps> = ({ src }) => {
         const fov = camera.fov * (Math.PI / 180);
         const cameraZ = Math.abs(maxDim / 2 / Math.tan(fov / 2));
 
-        camera.position.z = cameraZ * 2.1; // Increased multiplier from 1.5 to 2 for a more zoomed out view
+        camera.position.set(center.x, center.y, cameraZ * 1.5);
 
         const minZ = box.min.z;
         const cameraToFarEdge = minZ < 0 ? -minZ + cameraZ : cameraZ - minZ;
@@ -123,11 +123,8 @@ const ModelViewer: React.FC<ModelViewerProps> = ({ src }) => {
   }, [src]);
 
   return (
-    <div className="w-full max-w-full overflow-hidden">
-      <div
-        ref={containerRef}
-        className="h-[500px] w-full max-w-full"
-      />
+    <div className="w-full h-full min-h-[200px] overflow-hidden">
+      <div ref={containerRef} className="w-full h-full" />
     </div>
   );
 };

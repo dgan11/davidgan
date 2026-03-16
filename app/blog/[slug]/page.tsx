@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation'
 import { CustomMDX } from 'app/components/mdx'
-import { formatDate, getBlogPost } from 'app/blog/utils'
+import { formatDate, getBlogPost, getBlogPosts } from 'app/blog/utils'
 import { baseUrl } from 'app/sitemap'
 import TTSPlayer from 'app/components/TTSPlayer'
 import WordHighlighter from 'app/components/WordHighlighter'

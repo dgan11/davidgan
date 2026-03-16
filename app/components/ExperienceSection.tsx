@@ -17,7 +17,7 @@ interface ExperienceItem {
 const DeferredMixedMediaSlider = dynamic(() => import('./MixedMediaSlider'), {
   ssr: false,
   loading: () => (
-    <div className="w-full max-w-sm -mt-1 pb-4">
+    <div className="w-full max-w-sm md:max-w-none -mt-1 pb-4">
       <div className="h-[260px] rounded-lg bg-[#f3f0ea]" />
     </div>
   ),
@@ -56,7 +56,7 @@ const experiences: ExperienceItem[] = [
     media: (
       <LazyRenderOnVisible
         fallback={
-          <div className="w-full max-w-sm -mt-1 pb-4">
+          <div className="w-full max-w-sm md:max-w-none -mt-1 pb-4">
             <div className="h-[260px] rounded-lg bg-[#f3f0ea]" />
           </div>
         }

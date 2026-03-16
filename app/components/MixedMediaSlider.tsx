@@ -111,9 +111,9 @@ export default function MixedMediaSlider() {
   }, [])
 
   return (
-    <div className="w-full max-w-sm -mt-1 pb-4">
+    <div className="w-full max-w-sm md:max-w-none -mt-1 pb-4">
       <div
-        className="relative overflow-x-hidden overflow-y-visible cursor-grab active:cursor-grabbing"
+        className="relative overflow-x-hidden overflow-y-visible md:overflow-x-visible cursor-grab active:cursor-grabbing md:cursor-default"
         onMouseDown={handleMouseDown}
         onMouseLeave={handleMouseLeave}
         onMouseUp={handleMouseUp}
@@ -121,7 +121,7 @@ export default function MixedMediaSlider() {
       >
         <div
           ref={scrollRef}
-          className="flex items-start gap-3 overflow-x-auto snap-x snap-mandatory pt-1 pb-12"
+          className="flex items-start gap-3 overflow-x-auto snap-x snap-mandatory pt-1 pb-12 md:overflow-x-visible md:snap-none md:pb-2"
           style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
         >
           <style jsx>{`
@@ -151,7 +151,7 @@ export default function MixedMediaSlider() {
           ))}
         </div>
       </div>
-      <div className="flex justify-center gap-2 mt-3">
+      <div className="flex justify-center gap-2 mt-3 md:hidden">
         <Button
           onClick={() => {
             scrollRef.current?.scrollBy({ left: -200, behavior: 'smooth' });

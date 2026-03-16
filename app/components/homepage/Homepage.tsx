@@ -29,7 +29,7 @@ export default function Homepage() {
               Coinbase
             </SerifExternalLink>{' '}
             and{' '}
-            <SerifExternalLink href="https://manifold.markets/" className="text-[#555] hover:text-[#111]">
+            <SerifExternalLink href="https://manifold.xyz/" className="text-[#555] hover:text-[#111]">
               Manifold
             </SerifExternalLink>
             .

@@ -1,23 +1,14 @@
 import { NextRequest } from 'next/server'
 import { getBlogPosts } from 'app/blog/utils'
+import {
+  buildSpeechifySsml,
+  mdxToPlainText,
+  SPEECHIFY_API_URL,
+  SPEECHIFY_VOICE_ID,
+} from 'app/lib/tts-shared.mjs'
 import fs from 'fs'
 import path from 'path'
 import crypto from 'crypto'
-
-function mdxToPlainText(mdx: string): string {
-  // very light markdown cleanup for TTS
-  return mdx
-    .replace(/```[\s\S]*?```/g, '') // remove code blocks
-    .replace(/`([^`]+)`/g, '$1') // inline code
-    .replace(/^>\s?/gm, '') // blockquotes
-    .replace(/^#{1,6}\s*/gm, '') // headings
-    .replace(/!\[[^\]]*\]\([^)]*\)/g, '') // images
-    .replace(/\[([^\]]+)\]\([^)]*\)/g, '$1') // links -> text
-    .replace(/\*\*([^*]+)\*\*/g, '$1') // bold
-    .replace(/\*([^*]+)\*/g, '$1') // italic
-    .replace(/\n{3,}/g, '\n\n') // collapse newlines
-    .trim()
-}
 
 export async function GET(req: NextRequest) {
   // Return speech marks JSON if it exists
@@ -95,10 +86,9 @@ export async function POST(req: NextRequest) {
     }
 
     // Use SSML to set pitch and rate to ~-4%
-    const ssml = `<speak><prosody rate="-4%" pitch="-4%">${text}</prosody></speak>`
+    const ssml = buildSpeechifySsml(text)
 
-    const voiceId = '38c70d56-1551-4019-af88-96d614837dd7'
-    const resp = await fetch('https://api.sws.speechify.com/v1/audio/speech', {
+    const resp = await fetch(SPEECHIFY_API_URL, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -106,7 +96,7 @@ export async function POST(req: NextRequest) {
       },
       body: JSON.stringify({
         input: ssml,
-        voice_id: voiceId,
+        voice_id: SPEECHIFY_VOICE_ID,
         audio_format: 'mp3',
         model: 'simba-english',
         language: 'en-US',
@@ -140,7 +130,9 @@ export async function POST(req: NextRequest) {
         const marksPath = path.join(cacheDir, `${post.slug}.marks.json`)
         await fs.promises.writeFile(marksPath, JSON.stringify(marks))
       }
-    } catch {}
+    } catch (error) {
+      console.error('Failed to persist speech marks', error)
+    }
 
     // Optionally, clean old cached files for this slug
     try {
@@ -150,7 +142,9 @@ export async function POST(req: NextRequest) {
           .filter((f) => f.startsWith(`${post.slug}-`) && f !== hashedName)
           .map((f) => fs.promises.unlink(path.join(cacheDir, f)))
       )
-    } catch {}
+    } catch (error) {
+      console.error('Failed to clean old cached TTS files', error)
+    }
 
     return new Response(new Uint8Array(buffer), {
       status: 200,

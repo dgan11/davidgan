@@ -1,52 +1,67 @@
 "use client"
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
-export default function TTSPlayer({ slug, title }: { slug: string; title: string }) {
+export default function TTSPlayer({ slug }: { slug: string }) {
   const audioRef = useRef<HTMLAudioElement | null>(null)
+  const objectUrlRef = useRef<string | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [isPlaying, setIsPlaying] = useState(false)
 
-  const src = useMemo(() => `/api/tts`, [])
+  const revokeObjectUrl = () => {
+    if (objectUrlRef.current) {
+      URL.revokeObjectURL(objectUrlRef.current)
+      objectUrlRef.current = null
+    }
+  }
+
+  const loadAudioSource = async () => {
+    const staticUrl = `/audio/blog/${slug}.mp3`
+    const head = await fetch(staticUrl, { method: 'HEAD' })
+
+    if (head.ok) {
+      revokeObjectUrl()
+      return staticUrl
+    }
+
+    const response = await fetch('/api/tts', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ slug }),
+    })
+
+    if (!response.ok) {
+      throw new Error(await response.text())
+    }
+
+    const blob = await response.blob()
+    revokeObjectUrl()
+    objectUrlRef.current = URL.createObjectURL(blob)
+    return objectUrlRef.current
+  }
 
   async function handlePlay() {
+    const audio = audioRef.current
+    if (!audio) return
+
     try {
       setLoading(true)
       setError(null)
-      const a = audioRef.current
-      if (!a) return
-      // If already playing, pause; if paused with a loaded source, resume
-      if (a.src) {
-        if (!a.paused) {
-          a.pause()
+
+      if (audio.currentSrc) {
+        if (!audio.paused) {
+          audio.pause()
           return
         }
-        if (a.paused && a.readyState >= 2) {
-          await a.play().catch(() => {})
+
+        if (audio.readyState >= 2) {
+          await audio.play()
           return
         }
       }
-      // Prefer pre-generated static file if present
-      const staticUrl = `/audio/blog/${slug}.mp3`
-      const head = await fetch(staticUrl, { method: 'HEAD' })
-      if (head.ok) {
-        a.src = staticUrl
-        await a.play()
-        return
-      }
-      const resp = await fetch(src, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ slug }),
-      })
-      if (!resp.ok) {
-        throw new Error(await resp.text())
-      }
-      // If served from cache, the API returns the mp3 directly as a blob
-      const blob = await resp.blob()
-      const url = URL.createObjectURL(blob)
-      a.src = url
-      await a.play()
+
+      audio.src = await loadAudioSource()
+      await audio.play()
     } catch (e: any) {
       setError(e?.message || 'Failed to play audio')
     } finally {
@@ -67,8 +82,9 @@ export default function TTSPlayer({ slug, title }: { slug: string; title: string
       a.removeEventListener('play', onPlay)
       a.removeEventListener('pause', onPause)
       a.removeEventListener('ended', onEnded)
+      revokeObjectUrl()
     }
-  }, [])
+  }, [slug])
 
   return (
     <div className="flex items-center gap-3">
@@ -79,7 +95,13 @@ export default function TTSPlayer({ slug, title }: { slug: string; title: string
       >
         {loading ? 'Generating…' : isPlaying ? 'Listening' : 'Listen'}
       </button>
-      <audio id="tts-audio-main" ref={audioRef} controls className="w-full max-w-[340px]" />
+      <audio
+        id="tts-audio-main"
+        data-tts-audio="true"
+        ref={audioRef}
+        controls
+        className="w-full max-w-[340px]"
+      />
       {error && <span className="text-xs text-red-500">{error}</span>}
     </div>
   )

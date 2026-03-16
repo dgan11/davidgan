@@ -2,12 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Reading highlight for TTS sync */
-.reading-highlight {
-  background: linear-gradient(90deg, rgba(253,246,178,0.6), rgba(253,246,178,0.2));
-  transition: background-color 200ms ease;
-}
-
 .tts-word-active {
   background-color: rgba(253, 230, 138, 0.9);
   border-radius: 3px;
@@ -22,30 +16,6 @@
 .tts-word:hover {
   background-color: rgba(239, 228, 135, 0.35);
 }
-
-/* Tiny equalizer for Listening button */
-/* Cube style equalizer (3 columns x 4 squares) */
-.audio-eq.cubes {
-  display: inline-flex;
-  gap: 2px;
-  height: 16px;
-  align-items: flex-end;
-}
-.audio-eq.cubes .col { display: inline-flex; flex-direction: column-reverse; gap: 1px; }
-.audio-eq.cubes .cube {
-  width: 3px;
-  height: 3px;
-  background: currentColor;
-  opacity: 0.18; /* very faint baseline */
-  transition: opacity 90ms linear;
-}
-.audio-eq.cubes .cube.active { opacity: 0.95; }
-.audio-eq.cubes:not(.audio-live) .cube { animation: none; } /* no flashing when idle */
-.audio-eq.cubes.audio-live .cube { animation: none !important; }
-.audio-eq .bar:nth-child(2) { animation-delay: 100ms; }
-.audio-eq .bar:nth-child(3) { animation-delay: 200ms; }
-
-/* removed idle pulse to avoid flashing */
 
 @keyframes float {
   0% {

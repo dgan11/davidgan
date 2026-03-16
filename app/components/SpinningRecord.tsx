@@ -86,12 +86,6 @@ const SpinningRecord: React.FC<SpinningRecordProps> = ({ size = 48, image, isPla
           top: 0;
           left: 0;
         }
-        .light-reflections {
-          position: absolute;
-          top: 0;
-          left: 0;
-          pointer-events: none;
-        }
       `}</style>
     </div>
   );

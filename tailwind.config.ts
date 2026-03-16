@@ -53,27 +53,6 @@ const config: Config = {
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
       },
-      keyframes: {
-        "accordion-down": {
-          from: { height: "0" },
-          to: { height: "var(--radix-accordion-content-height)" },
-        },
-        "accordion-up": {
-          from: { height: "var(--radix-accordion-content-height)" },
-          to: { height: "0" },
-        },
-        'loop-scroll': {
-          '0%': { transform: 'translateX(0)' },
-          '100%': { transform: 'translateX(calc(-150px * 5))' },
-        },
-        ticker: {
-          '0%': { transform: 'translateX(0)' },
-          '100%': { transform: 'translateX(-50%)' },
-        },
-      },
-      animation: {
-        ticker: 'ticker 6s linear infinite',
-      },
     },
   },
   plugins: [require('@tailwindcss/typography')],

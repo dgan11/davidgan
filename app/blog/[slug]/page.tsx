@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation'
 import { CustomMDX } from 'app/components/mdx'
-import { formatDate, getBlogPosts } from 'app/blog/utils'
+import { formatDate, getBlogPost } from 'app/blog/utils'
 import { baseUrl } from 'app/sitemap'
 import TTSPlayer from 'app/components/TTSPlayer'
 import WordHighlighter from 'app/components/WordHighlighter'
@@ -15,7 +15,7 @@ export async function generateStaticParams() {
 }
 
 export function generateMetadata({ params }) {
-  let post = getBlogPosts().find((post) => post.slug === params.slug)
+  let post = getBlogPost(params.slug)
   if (!post) {
     return
   }
@@ -55,7 +55,7 @@ export function generateMetadata({ params }) {
 }
 
 export default function Blog({ params }) {
-  let post = getBlogPosts().find((post) => post.slug === params.slug)
+  let post = getBlogPost(params.slug)
 
   if (!post) {
     notFound()
@@ -101,7 +101,7 @@ export default function Blog({ params }) {
         </p>
       </div>
       <div className="mb-8">
-        <TTSPlayer slug={post.slug} title={post.metadata.title} />
+        <TTSPlayer slug={post.slug} />
       </div>
       <article className="prose">
         <CustomMDX source={post.content} />

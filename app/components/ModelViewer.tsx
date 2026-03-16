@@ -18,14 +18,15 @@ const ModelViewer: React.FC<ModelViewerProps> = ({ src }) => {
   const frameIdRef = useRef<number | null>(null);
 
   useEffect(() => {
-    if (!containerRef.current) return;
+    const containerElement = containerRef.current;
+    if (!containerElement) return;
 
     const scene = new THREE.Scene();
     sceneRef.current = scene;
 
     const camera = new THREE.PerspectiveCamera(
       7,
-      containerRef.current.offsetWidth / containerRef.current.offsetHeight,
+      containerElement.offsetWidth / containerElement.offsetHeight,
       1,
       1000
     );
@@ -34,9 +35,9 @@ const ModelViewer: React.FC<ModelViewerProps> = ({ src }) => {
 
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     rendererRef.current = renderer;
-    renderer.setSize(containerRef.current.offsetWidth, containerRef.current.offsetHeight);
+    renderer.setSize(containerElement.offsetWidth, containerElement.offsetHeight);
     renderer.setClearColor(0x000000, 0); // Set to transparent
-    containerRef.current.appendChild(renderer.domElement);
+    containerElement.appendChild(renderer.domElement);
 
     const controls = new OrbitControls(camera, renderer.domElement);
     controlsRef.current = controls;
@@ -73,9 +74,7 @@ const ModelViewer: React.FC<ModelViewerProps> = ({ src }) => {
         controls.target.copy(center);
         controls.update();
       },
-      (progress) => {
-        console.log((progress.loaded / progress.total) * 100 + '% loaded');
-      },
+      undefined,
       (error) => {
         console.error('An error occurred loading the 3D model:', error);
       }
@@ -116,8 +115,7 @@ const ModelViewer: React.FC<ModelViewerProps> = ({ src }) => {
           controlsRef.current.dispose();
         }
         rendererRef.current.dispose();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-        containerRef.current?.removeChild(rendererRef.current.domElement);
+        containerElement.removeChild(rendererRef.current.domElement);
       }
     };
   }, [src]);

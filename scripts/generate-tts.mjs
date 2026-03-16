@@ -1,6 +1,12 @@
 import fs from 'fs'
 import path from 'path'
-import crypto from 'crypto'
+import {
+  buildSpeechifySsml,
+  parseFrontmatter,
+  mdxToPlainText,
+  SPEECHIFY_API_URL,
+  SPEECHIFY_VOICE_ID,
+} from '../app/lib/tts-shared.mjs'
 
 const ROOT = process.cwd()
 const POSTS_DIR = path.join(ROOT, 'app', 'blog', 'posts')
@@ -30,51 +36,19 @@ if (!process.env.SPEECHIFY_API_KEY) {
 }
 
 const SPEECHIFY_API_KEY = process.env.SPEECHIFY_API_KEY
-const VOICE_ID = '38c70d56-1551-4019-af88-96d614837dd7'
 
 if (!SPEECHIFY_API_KEY) {
   console.error('Missing SPEECHIFY_API_KEY in environment')
   process.exit(1)
 }
 
-function parseFrontmatter(fileContent) {
-  const frontmatterRegex = /---\s*([\s\S]*?)\s*---/
-  const match = frontmatterRegex.exec(fileContent)
-  if (!match) return { metadata: {}, content: fileContent }
-  const frontMatterBlock = match[1]
-  const content = fileContent.replace(frontmatterRegex, '').trim()
-  const frontMatterLines = frontMatterBlock.trim().split('\n')
-  const metadata = {}
-  frontMatterLines.forEach((line) => {
-    const [key, ...valueArr] = line.split(': ')
-    let value = (valueArr.join(': ') || '').trim()
-    value = value.replace(/^["'](.*)["']$/, '$1')
-    metadata[key.trim()] = value
-  })
-  return { metadata, content }
-}
-
-function mdxToPlainText(mdx) {
-  return mdx
-    .replace(/```[\s\S]*?```/g, '')
-    .replace(/`([^`]+)`/g, '$1')
-    .replace(/^>\s?/gm, '')
-    .replace(/^#{1,6}\s*/gm, '')
-    .replace(/!\[[^\]]*\]\([^)]*\)/g, '')
-    .replace(/\[([^\]]+)\]\([^)]*\)/g, '$1')
-    .replace(/\*\*([^*]+)\*\*/g, '$1')
-    .replace(/\*([^*]+)\*/g, '$1')
-    .replace(/\n{3,}/g, '\n\n')
-    .trim()
-}
-
 async function synthesizeToFile({ slug, title, content }) {
   const text = `${title}. ${mdxToPlainText(content)}`
-  const ssml = `<speak><prosody rate="-4%" pitch="-4%">${text}</prosody></speak>`
+  const ssml = buildSpeechifySsml(text)
   const outPath = path.join(OUT_DIR, `${slug}.mp3`)
   const marksPath = path.join(OUT_DIR, `${slug}.marks.json`)
 
-  const resp = await fetch('https://api.sws.speechify.com/v1/audio/speech', {
+  const resp = await fetch(SPEECHIFY_API_URL, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -82,7 +56,7 @@ async function synthesizeToFile({ slug, title, content }) {
     },
     body: JSON.stringify({
       input: ssml,
-      voice_id: VOICE_ID,
+      voice_id: SPEECHIFY_VOICE_ID,
       audio_format: 'mp3',
       model: 'simba-english',
       language: 'en-US',
@@ -104,7 +78,9 @@ async function synthesizeToFile({ slug, title, content }) {
   try {
     const marks = data.speech_marks?.chunks || data.speech_marks || null
     if (marks) await fs.promises.writeFile(marksPath, JSON.stringify(marks))
-  } catch {}
+  } catch (error) {
+    console.error(`Failed to write speech marks for ${slug}:`, error)
+  }
   return outPath
 }
 

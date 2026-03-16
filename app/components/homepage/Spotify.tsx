@@ -60,23 +60,29 @@ function loadSpotifyIframeApi() {
   }
 
   window.__spotifyIframeApiPromise = new Promise<SpotifyIframeApi>((resolve, reject) => {
-    window.onSpotifyIframeApiReady = (api) => {
+    const handleReady = (api: SpotifyIframeApi) => {
       window.__spotifyIframeApi = api;
+      window.__spotifyIframeApiPromise = Promise.resolve(api);
       resolve(api);
     };
+
+    window.onSpotifyIframeApiReady = handleReady;
 
     const existingScript = document.querySelector<HTMLScriptElement>(
       'script[src="https://open.spotify.com/embed/iframe-api/v1"]'
     );
 
     if (existingScript) {
-      return;
+      existingScript.remove();
     }
 
     const script = document.createElement('script');
     script.src = 'https://open.spotify.com/embed/iframe-api/v1';
     script.async = true;
-    script.onerror = () => reject(new Error('Failed to load Spotify iframe API.'));
+    script.onerror = () => {
+      window.__spotifyIframeApiPromise = undefined;
+      reject(new Error('Failed to load Spotify iframe API.'));
+    };
     document.body.appendChild(script);
   });
 

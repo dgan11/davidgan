@@ -57,13 +57,12 @@ export default function MixedMediaSlider() {
   const [isAtEnd, setIsAtEnd] = useState(false)
 
   const handleMouseDown = (e: React.MouseEvent) => {
-    // Check if the click originated from a ModelViewer
-    // if ((e.target as HTMLElement).closest('.model-viewer-container')) {
-    //   return; // Do nothing if clicked on ModelViewer
-    // }
+    const scrollElement = scrollRef.current
+    if (!scrollElement) return
+
     setIsDragging(true)
-    setStartX(e.pageX - scrollRef.current!.offsetLeft)
-    setScrollLeft(scrollRef.current!.scrollLeft)
+    setStartX(e.pageX - scrollElement.offsetLeft)
+    setScrollLeft(scrollElement.scrollLeft)
   }
 
   const handleMouseLeave = () => {
@@ -76,14 +75,17 @@ export default function MixedMediaSlider() {
 
   const handleMouseMove = (e: React.MouseEvent) => {
     if (!isDragging) return
-    // Check if the mouse is over a ModelViewer
     if ((e.target as HTMLElement).closest('.model-viewer-container')) {
-      return; // Do nothing if over ModelViewer
+      return
     }
+
+    const scrollElement = scrollRef.current
+    if (!scrollElement) return
+
     e.preventDefault()
-    const x = e.pageX - scrollRef.current!.offsetLeft
-    const walk = (x - startX) * 2 // Scroll-fast
-    scrollRef.current!.scrollLeft = scrollLeft - walk
+    const x = e.pageX - scrollElement.offsetLeft
+    const walk = (x - startX) * 2
+    scrollElement.scrollLeft = scrollLeft - walk
   }
 
   const checkScrollPosition = () => {
@@ -114,7 +116,7 @@ export default function MixedMediaSlider() {
       >
         <div
           ref={scrollRef}
-          className="flex overflow-x-auto gap-3 scrollbar-hide snap-x snap-mandatory items-start pt-1 pb-12"
+          className="flex items-start gap-3 overflow-x-auto snap-x snap-mandatory pt-1 pb-12"
           style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
         >
           <style jsx>{`

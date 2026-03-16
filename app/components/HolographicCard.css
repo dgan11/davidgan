@@ -94,11 +94,6 @@
   opacity: .75;
 }
 
-.holo-card.hovered::after {
-  filter: brightness(1) contrast(1);;
-  opacity: 1;
-}
-
 .holo-card.hovered::before {
   background-image: linear-gradient(
     110deg,
@@ -115,6 +110,7 @@
 }
 
 .holo-card.hovered::after {
+  filter: brightness(1) contrast(1);
   background-position: var(--sprkPos);
   opacity: var(--opc);
 }

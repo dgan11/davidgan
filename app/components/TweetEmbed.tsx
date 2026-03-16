@@ -1,98 +1,38 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { Tweet } from 'react-tweet';
 
-type TwitterWidgets = {
-  load: (element?: HTMLElement) => void;
-};
-
-declare global {
-  interface Window {
-    twttr?: {
-      widgets?: TwitterWidgets;
-    };
-    __twitterWidgetsPromise?: Promise<TwitterWidgets>;
-  }
-}
-
-function loadTwitterWidgets() {
-  if (typeof window === 'undefined') {
-    return Promise.reject(new Error('Twitter widgets can only load in the browser.'));
-  }
-
-  if (window.twttr?.widgets) {
-    return Promise.resolve(window.twttr.widgets);
-  }
-
-  if (window.__twitterWidgetsPromise) {
-    return window.__twitterWidgetsPromise;
-  }
-
-  window.__twitterWidgetsPromise = new Promise<TwitterWidgets>((resolve, reject) => {
-    const handleResolve = () => {
-      if (window.twttr?.widgets) {
-        resolve(window.twttr.widgets);
-        return;
-      }
-
-      reject(new Error('Twitter widgets did not initialize.'));
-    };
-
-    const existingScript = document.querySelector<HTMLScriptElement>(
-      'script[src="https://platform.twitter.com/widgets.js"]'
-    );
-
-    if (existingScript) {
-      existingScript.addEventListener('load', handleResolve, { once: true });
-
-      if (window.twttr?.widgets) {
-        handleResolve();
-      }
-
-      return;
-    }
-
-    const script = document.createElement('script');
-    script.src = 'https://platform.twitter.com/widgets.js';
-    script.async = true;
-    script.onload = handleResolve;
-    script.onerror = () => reject(new Error('Failed to load Twitter widgets.'));
-    document.body.appendChild(script);
-  });
-
-  return window.__twitterWidgetsPromise;
+function getTweetIdFromUrl(url: string): string | null {
+  const match = url.match(/status\/(\d+)/);
+  return match ? match[1] : null;
 }
 
 /**
  * Embeds a Twitter/X tweet by URL.
- * widgets.js only recognizes twitter.com URLs, so we normalize x.com → twitter.com
+ * Uses react-tweet (syndication API) instead of widgets.js for reliability.
  */
 export function TweetEmbed({ url }: { url: string }) {
-  const containerRef = useRef<HTMLDivElement>(null);
+  const tweetId = getTweetIdFromUrl(url);
 
-  // widgets.js doesn't recognize x.com - must use twitter.com
-  const embedUrl = url.replace(/^https:\/\/x\.com\//, 'https://twitter.com/');
-
-  useEffect(() => {
-    if (!embedUrl || !containerRef.current) return;
-
-    loadTwitterWidgets()
-      .then((widgets) => {
-        widgets.load(containerRef.current ?? undefined);
-      })
-      .catch(() => {});
-  }, [embedUrl]);
+  if (!tweetId) {
+    return (
+      <div className="mt-3 w-full max-w-[400px] pl-0 sm:pl-16">
+        <a
+          href={url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-[#666] hover:text-[#333]"
+        >
+          View on X →
+        </a>
+      </div>
+    );
+  }
 
   return (
-    <div className="mt-3 w-full max-w-[400px] pl-16">
-      <div
-        ref={containerRef}
-        className="[&_.twitter-tweet]:max-w-full"
-        style={{ zoom: 0.73 }}
-      >
-        <blockquote className="twitter-tweet" data-dnt="true">
-          <a href={embedUrl}>View on X</a>
-        </blockquote>
+    <div className="mt-3 w-full max-w-[400px] pl-0 sm:pl-16 [&_.react-tweet-theme]:min-w-0">
+      <div style={{ zoom: 0.9 }}>
+        <Tweet id={tweetId} />
       </div>
     </div>
   );

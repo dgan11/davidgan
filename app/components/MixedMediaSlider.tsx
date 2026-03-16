@@ -1,10 +1,15 @@
 'use client'
 
+import dynamic from 'next/dynamic'
 import React, { useRef, useState } from 'react'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { Button } from './ui/button'
 import HoloCard from "./HolographicCard"
-import ModelViewer from "./ModelViewer"
+
+const ModelViewer = dynamic(() => import('./ModelViewer'), {
+  ssr: false,
+  loading: () => <div className="h-full w-full animate-pulse bg-[#e1ddd6]" />,
+})
 
 interface SlideData {
   type: 'card' | 'model';
@@ -133,8 +138,8 @@ export default function MixedMediaSlider() {
                   color1={slide.color1 || ''}
                   color2={slide.color2 || ''}
                   isLarger={false}
-                  priority={index < 2}
-                  loading={index < 2 ? 'eager' : 'lazy'}
+                  priority={false}
+                  loading="lazy"
                 />
               )}
               {slide.type === 'model' && slide.modelSrc && (

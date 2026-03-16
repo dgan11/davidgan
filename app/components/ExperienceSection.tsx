@@ -1,8 +1,10 @@
 import type { ReactNode } from 'react';
 
 import Image from 'next/image';
-import MixedMediaSlider from './MixedMediaSlider';
-import { TweetEmbed } from './TweetEmbed';
+import dynamic from 'next/dynamic';
+
+import { ArticleEmbed } from './ArticleEmbed';
+import { LazyRenderOnVisible } from './LazyRenderOnVisible';
 
 interface ExperienceItem {
   company: string;
@@ -12,14 +14,28 @@ interface ExperienceItem {
   mediaWrapperClassName?: string;
 }
 
-const ANYSPHERE_TWEET_URL = 'https://x.com/davidgan/status/1936614153768321255';
+const DeferredMixedMediaSlider = dynamic(() => import('./MixedMediaSlider'), {
+  ssr: false,
+  loading: () => (
+    <div className="w-full max-w-sm -mt-1 pb-4">
+      <div className="h-[260px] rounded-lg bg-[#f3f0ea]" />
+    </div>
+  ),
+});
 
 const experiences: ExperienceItem[] = [
   {
     company: 'Anysphere',
     period: '2025 - now',
     description: 'building cursor',
-    media: <TweetEmbed url={ANYSPHERE_TWEET_URL} />,
+    media: (
+      <ArticleEmbed
+        url="https://fortune.com/2025/12/08/cursor-developed-an-internal-ai-help-desk-that-handles-80-of-its-employees-support-tickets-says-the-29-billion-startups-ceo/"
+        title="Cursor developed an internal AI help desk that handles 80% of its employees' support tickets"
+        source="Fortune"
+        date="Dec 8, 2025"
+      />
+    ),
   },
   {
     company: 'Coinbase',
@@ -30,14 +46,24 @@ const experiences: ExperienceItem[] = [
     company: 'Manifold.xyz',
     period: '2021 - 2024',
     description: 'helped creators and brands use NFTs',
-    mediaWrapperClassName: 'mt-1 pl-16',
+    mediaWrapperClassName: 'mt-1',
   },
   {
     company: 'Altan Insights',
     period: '2020 - 2021',
-    description: 'helped investors understand alternative assets',
-    mediaWrapperClassName: 'mt-4 pl-16',
-    media: <MixedMediaSlider />,
+    description: 'helped investors evaluate alternative assets',
+    mediaWrapperClassName: 'mt-4',
+    media: (
+      <LazyRenderOnVisible
+        fallback={
+          <div className="w-full max-w-sm -mt-1 pb-4">
+            <div className="h-[260px] rounded-lg bg-[#f3f0ea]" />
+          </div>
+        }
+      >
+        <DeferredMixedMediaSlider />
+      </LazyRenderOnVisible>
+    ),
   },
 ];
 
@@ -59,7 +85,7 @@ export default function ExperienceSection() {
             <p className="opacity-75">{experience.description}</p>
 
             {experience.company === 'Manifold.xyz' && (
-              <div className="mt-1 pl-16">
+              <div className="mt-1">
                 <a
                   href={manifoldProjectImage.href}
                   target="_blank"
@@ -76,8 +102,6 @@ export default function ExperienceSection() {
                     width={144}
                     height={144}
                     className="w-full h-full object-cover"
-                    priority
-                    unoptimized
                     placeholder="blur"
                     blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWEREiMxUf/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
                     sizes="(max-width: 475px) 128px, (max-width: 500px) 144px, 160px"

@@ -89,7 +89,6 @@ const HoloCard: React.FC<HoloCardProps> = ({
       style={{
         '--color1': color1,
         '--color2': color2,
-        '--imageUrl': `url(${imageUrl})`,
         ...calculateStyles(),
       } as unknown as React.CSSProperties}
     >
@@ -106,7 +105,6 @@ const HoloCard: React.FC<HoloCardProps> = ({
           className="card-image"
           priority={priority}
           loading={loading}
-          unoptimized={imageUrl.includes('utfs.io')}
           onLoad={() => setIsLoading(false)}
           onError={() => {
             setIsLoading(false);

@@ -51,9 +51,6 @@ export default function RootLayout({
           'tracking-wide',
         )}
       >
-        <head>
-          <link rel="preload" href="https://open.spotify.com/embed/iframe-api/v1" as="script" />
-        </head>
         <body className="antialiased max-w-3xl mx-4 mt-8 lg:mx-auto">
           <main className="flex-auto min-w-0 mt-6 flex flex-col px-2 md:px-0">
             {/* <Navbar /> */}

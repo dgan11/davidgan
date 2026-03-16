@@ -64,8 +64,8 @@ const HoloCard: React.FC<HoloCardProps> = ({
     const pxSpark = (50 + (px - 50) / 7);
     const pySpark = (50 + (py - 50) / 7);
     const pOpc = 20 + (Math.abs(pa) * 1.5);
-    const ty = ((tp - 50) / 2) * -1;
-    const tx = ((lp - 50) / 1.5) * 0.5;
+    const ty = ((tp - 50) / 4) * -1;
+    const tx = ((lp - 50) / 3) * 0.5;
 
     const gradPos = `${lp}% ${tp}%`;
     const sprkPos = `${pxSpark}% ${pySpark}%`;
@@ -93,11 +93,7 @@ const HoloCard: React.FC<HoloCardProps> = ({
         ...calculateStyles(),
       } as unknown as React.CSSProperties}
     >
-      {isLoading && (
-        <div className="card-skeleton">
-          <div className="skeleton-shimmer" />
-        </div>
-      )}
+      {isLoading && <div className="card-skeleton" />}
       {hasError ? (
         <div className="card-error">
           <span>Failed to load image</span>
@@ -110,6 +106,7 @@ const HoloCard: React.FC<HoloCardProps> = ({
           className="card-image"
           priority={priority}
           loading={loading}
+          unoptimized={imageUrl.includes('utfs.io')}
           onLoad={() => setIsLoading(false)}
           onError={() => {
             setIsLoading(false);

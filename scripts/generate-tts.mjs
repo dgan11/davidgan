@@ -1,0 +1,114 @@
+import fs from 'fs'
+import path from 'path'
+import {
+  buildSpeechifySsml,
+  parseFrontmatter,
+  mdxToPlainText,
+  SPEECHIFY_API_URL,
+  SPEECHIFY_VOICE_ID,
+} from '../app/lib/tts-shared.mjs'
+
+const ROOT = process.cwd()
+const POSTS_DIR = path.join(ROOT, 'app', 'blog', 'posts')
+const OUT_DIR = path.join(ROOT, 'public', 'audio', 'blog')
+
+// Load .env.local manually if not provided in environment
+function loadEnvLocal() {
+  const envPath = path.join(ROOT, '.env.local')
+  if (!fs.existsSync(envPath)) return
+  const raw = fs.readFileSync(envPath, 'utf-8')
+  raw.split('\n').forEach((line) => {
+    const trimmed = line.trim()
+    if (!trimmed || trimmed.startsWith('#')) return
+    const idx = trimmed.indexOf('=')
+    if (idx === -1) return
+    const key = trimmed.slice(0, idx).trim()
+    let value = trimmed.slice(idx + 1).trim()
+    if ((value.startsWith('"') && value.endsWith('"')) || (value.startsWith("'") && value.endsWith("'"))) {
+      value = value.slice(1, -1)
+    }
+    if (!(key in process.env)) process.env[key] = value
+  })
+}
+
+if (!process.env.SPEECHIFY_API_KEY) {
+  loadEnvLocal()
+}
+
+const SPEECHIFY_API_KEY = process.env.SPEECHIFY_API_KEY
+
+if (!SPEECHIFY_API_KEY) {
+  console.error('Missing SPEECHIFY_API_KEY in environment')
+  process.exit(1)
+}
+
+async function synthesizeToFile({ slug, title, content }) {
+  const text = `${title}. ${mdxToPlainText(content)}`
+  const ssml = buildSpeechifySsml(text)
+  const outPath = path.join(OUT_DIR, `${slug}.mp3`)
+  const marksPath = path.join(OUT_DIR, `${slug}.marks.json`)
+
+  const resp = await fetch(SPEECHIFY_API_URL, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${SPEECHIFY_API_KEY}`,
+    },
+    body: JSON.stringify({
+      input: ssml,
+      voice_id: SPEECHIFY_VOICE_ID,
+      audio_format: 'mp3',
+      model: 'simba-english',
+      language: 'en-US',
+      options: { speech_marks: true },
+    }),
+  })
+
+  if (!resp.ok) {
+    const err = await resp.text()
+    throw new Error(`Speechify failed for ${slug}: ${err}`)
+  }
+
+  const data = await resp.json()
+  const base64 = data.audio_data
+  const buffer = Buffer.from(base64, 'base64')
+
+  await fs.promises.mkdir(OUT_DIR, { recursive: true })
+  await fs.promises.writeFile(outPath, buffer)
+  try {
+    const marks = data.speech_marks?.chunks || data.speech_marks || null
+    if (marks) await fs.promises.writeFile(marksPath, JSON.stringify(marks))
+  } catch (error) {
+    console.error(`Failed to write speech marks for ${slug}:`, error)
+  }
+  return outPath
+}
+
+async function main() {
+  const files = (await fs.promises.readdir(POSTS_DIR)).filter((f) => f.endsWith('.mdx'))
+  console.log(`Found ${files.length} post(s). Generating MP3s…`)
+
+  let success = 0
+  for (const file of files) {
+    const slug = path.basename(file, path.extname(file))
+    const raw = await fs.promises.readFile(path.join(POSTS_DIR, file), 'utf-8')
+    const { metadata, content } = parseFrontmatter(raw)
+    const title = metadata.title || slug
+
+    try {
+      const out = await synthesizeToFile({ slug, title, content })
+      console.log(`✔ ${slug} -> ${path.relative(ROOT, out)}`)
+      success++
+    } catch (e) {
+      console.error(`✖ ${slug}:`, e.message)
+    }
+  }
+  console.log(`Done. ${success}/${files.length} generated.`)
+}
+
+main().catch((e) => {
+  console.error(e)
+  process.exit(1)
+})
+
+

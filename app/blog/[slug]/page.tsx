@@ -1,7 +1,10 @@
 import { notFound } from 'next/navigation'
 import { CustomMDX } from 'app/components/mdx'
-import { formatDate, getBlogPosts } from 'app/blog/utils'
+import { formatDate, getBlogPost, getBlogPosts } from 'app/blog/utils'
 import { baseUrl } from 'app/sitemap'
+import TTSPlayer from 'app/components/TTSPlayer'
+import WordHighlighter from 'app/components/WordHighlighter'
+import Link from 'next/link'
 
 export async function generateStaticParams() {
   let posts = getBlogPosts()
@@ -12,7 +15,7 @@ export async function generateStaticParams() {
 }
 
 export function generateMetadata({ params }) {
-  let post = getBlogPosts().find((post) => post.slug === params.slug)
+  let post = getBlogPost(params.slug)
   if (!post) {
     return
   }
@@ -52,7 +55,7 @@ export function generateMetadata({ params }) {
 }
 
 export default function Blog({ params }) {
-  let post = getBlogPosts().find((post) => post.slug === params.slug)
+  let post = getBlogPost(params.slug)
 
   if (!post) {
     notFound()
@@ -82,18 +85,28 @@ export default function Blog({ params }) {
           }),
         }}
       />
+      <div className="mb-4">
+        <Link href="/" className="text-sm text-neutral-600 hover:text-neutral-800 inline-flex items-center gap-1">
+          <span>←</span>
+          <span>back</span>
+        </Link>
+      </div>
       <h1 className="title font-semibold text-2xl tracking-tighter">
         {post.metadata.title}
       </h1>
-      <div className="flex justify-between items-center mt-2 mb-8 text-sm">
+      <div className="flex justify-between items-center mt-2 mb-6 text-sm">
         {/* <p className="text-sm text-neutral-600 dark:text-neutral-400"> */}
         <p className="text-sm text-neutral-600">
           {formatDate(post.metadata.publishedAt)}
         </p>
       </div>
+      <div className="mb-8">
+        <TTSPlayer slug={post.slug} />
+      </div>
       <article className="prose">
         <CustomMDX source={post.content} />
       </article>
+      <WordHighlighter slug={post.slug} pace={1.15} offsetSec={0} includeTitle={true} />
     </section>
   )
 }

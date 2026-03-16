@@ -18,14 +18,15 @@ const ModelViewer: React.FC<ModelViewerProps> = ({ src }) => {
   const frameIdRef = useRef<number | null>(null);
 
   useEffect(() => {
-    if (!containerRef.current) return;
+    const containerElement = containerRef.current;
+    if (!containerElement) return;
 
     const scene = new THREE.Scene();
     sceneRef.current = scene;
 
     const camera = new THREE.PerspectiveCamera(
       7,
-      containerRef.current.offsetWidth / containerRef.current.offsetHeight,
+      containerElement.offsetWidth / containerElement.offsetHeight,
       1,
       1000
     );
@@ -34,9 +35,9 @@ const ModelViewer: React.FC<ModelViewerProps> = ({ src }) => {
 
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     rendererRef.current = renderer;
-    renderer.setSize(containerRef.current.offsetWidth, containerRef.current.offsetHeight);
+    renderer.setSize(containerElement.offsetWidth, containerElement.offsetHeight);
     renderer.setClearColor(0x000000, 0); // Set to transparent
-    containerRef.current.appendChild(renderer.domElement);
+    containerElement.appendChild(renderer.domElement);
 
     const controls = new OrbitControls(camera, renderer.domElement);
     controlsRef.current = controls;
@@ -62,7 +63,7 @@ const ModelViewer: React.FC<ModelViewerProps> = ({ src }) => {
         const fov = camera.fov * (Math.PI / 180);
         const cameraZ = Math.abs(maxDim / 2 / Math.tan(fov / 2));
 
-        camera.position.z = cameraZ * 2.1; // Increased multiplier from 1.5 to 2 for a more zoomed out view
+        camera.position.set(center.x, center.y, cameraZ * 1.5);
 
         const minZ = box.min.z;
         const cameraToFarEdge = minZ < 0 ? -minZ + cameraZ : cameraZ - minZ;
@@ -73,9 +74,7 @@ const ModelViewer: React.FC<ModelViewerProps> = ({ src }) => {
         controls.target.copy(center);
         controls.update();
       },
-      (progress) => {
-        console.log((progress.loaded / progress.total) * 100 + '% loaded');
-      },
+      undefined,
       (error) => {
         console.error('An error occurred loading the 3D model:', error);
       }
@@ -116,18 +115,14 @@ const ModelViewer: React.FC<ModelViewerProps> = ({ src }) => {
           controlsRef.current.dispose();
         }
         rendererRef.current.dispose();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-        containerRef.current?.removeChild(rendererRef.current.domElement);
+        containerElement.removeChild(rendererRef.current.domElement);
       }
     };
   }, [src]);
 
   return (
-    <div className="w-full max-w-full overflow-hidden">
-      <div
-        ref={containerRef}
-        className="h-[500px] w-full max-w-full"
-      />
+    <div className="w-full h-full min-h-[200px] overflow-hidden">
+      <div ref={containerRef} className="w-full h-full" />
     </div>
   );
 };

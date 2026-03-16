@@ -3,15 +3,11 @@
   height: 100vw;
   position: relative;
   overflow: hidden;
-  margin: 20px;
+  margin: 0;
   border-radius: 5% / 3.5%;
   box-shadow: 
-    -5px -5px 5px -5px var(--color1), 
-    5px 5px 5px -5px var(--color2), 
-    -7px -7px 10px -5px transparent, 
-    7px 7px 10px -5px transparent, 
-    0 0 5px 0px rgba(255,255,255,0),
-    0 55px 35px -20px rgba(0, 0, 0, 0.5);
+    0 1px 2px rgba(0,0,0,0.04),
+    0 4px 12px -4px rgba(0, 0, 0, 0.2);
   transition: transform 0.5s ease, box-shadow 0.2s ease;
   will-change: transform, filter;
   background-color: #040712;
@@ -24,8 +20,8 @@
 
 @media screen and (max-width: 599px) {
   .holo-card {
-    width: 80vw;
-    height: 112vw;
+    width: 130px;
+    height: 224px;
   }
 
   .holo-card.larger {
@@ -36,13 +32,11 @@
 
 @media screen and (min-width: 600px) {
   .holo-card {
-    width: clamp(12.9vw, 61vh, 18vw);
-    height: clamp(18vw, 85vh, 25.2vw);
+    width: 150px;
+    height: 260px;
   }
 
   .holo-card.larger {
-    /* width: clamp(12.9vw, 61vh, 19vw);
-    height: clamp(18vw, 85vh, 31.0vw); */
     width: clamp(12.9vw, 61vh, 28vw);
     height: clamp(18vw, 85vh, 46.6vw);
   }
@@ -50,12 +44,8 @@
 
 .holo-card:hover {
   box-shadow: 
-    -20px -20px 30px -25px var(--color1), 
-    20px 20px 30px -25px var(--color2), 
-    -7px -7px 10px -5px var(--color1), 
-    7px 7px 10px -5px var(--color2), 
-    0 0 13px 4px rgba(255,255,255,0.3),
-    0 55px 35px -20px rgba(0, 0, 0, 0.5);
+    0 4px 12px rgba(0,0,0,0.08),
+    0 8px 24px -8px rgba(0, 0, 0, 0.25);
 }
 
 .holo-card::before,
@@ -104,11 +94,6 @@
   opacity: .75;
 }
 
-.holo-card.hovered::after {
-  filter: brightness(1) contrast(1);;
-  opacity: 1;
-}
-
 .holo-card.hovered::before {
   background-image: linear-gradient(
     110deg,
@@ -125,6 +110,7 @@
 }
 
 .holo-card.hovered::after {
+  filter: brightness(1) contrast(1);
   background-position: var(--sprkPos);
   opacity: var(--opc);
 }
@@ -140,32 +126,8 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(90deg, #f0f0f0 25%, transparent 37%, #f0f0f0 63%);
+  background: #e8e6e0;
   z-index: 3;
-}
-
-.skeleton-shimmer {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(
-    90deg,
-    transparent 0%,
-    rgba(255,255,255,0.4) 50%,
-    transparent 100%
-  );
-  animation: shimmer 1.5s infinite;
-}
-
-@keyframes shimmer {
-  0% {
-    transform: translateX(-100%);
-  }
-  100% {
-    transform: translateX(100%);
-  }
 }
 
 /* Error state */

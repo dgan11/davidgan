@@ -61,7 +61,7 @@ const SpinningRecord: React.FC<SpinningRecordProps> = ({ size = 48, image, isPla
             />
           ) : null}
           {[...Array(7)].map((_, i) => (
-            <circle key={i} cx="24" cy="24" r={15.3 + i * 1.25} fill="none" stroke="#3a3a3a" strokeWidth="0.35" />
+            <circle key={i} cx="24" cy="24" r={15.3 + i * 1.25} fill="none" stroke="#555" strokeWidth="0.4" />
           ))}
           <circle cx="24" cy="24" r="24" fill="url(#light)" />
           <circle cx="24" cy="24" r="1.2" fill="#050505" stroke="#111" strokeWidth="0.2" />

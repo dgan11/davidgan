@@ -73,7 +73,11 @@ function loadSpotifyIframeApi() {
     );
 
     if (existingScript) {
-      existingScript.remove();
+      if (window.__spotifyIframeApi) {
+        handleReady(window.__spotifyIframeApi);
+      }
+
+      return;
     }
 
     const script = document.createElement('script');
@@ -111,6 +115,7 @@ export function Spotify() {
   const [isLoading, setIsLoading] = useState(true);
   const [fetchError, setFetchError] = useState<string | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [shouldInitializeController, setShouldInitializeController] = useState(false);
 
   const iframeHostRef = useRef<HTMLDivElement | null>(null);
   const controllerRef = useRef<SpotifyEmbedController | null>(null);
@@ -150,9 +155,37 @@ export function Spotify() {
   );
 
   useEffect(() => {
+    if (!spotifyUri || typeof window === 'undefined') {
+      return;
+    }
+
+    setShouldInitializeController(false);
+    let idleCallbackId: number | undefined;
+    let timeoutId: number | undefined;
+
+    if (typeof window.requestIdleCallback === 'function') {
+      idleCallbackId = window.requestIdleCallback(() => setShouldInitializeController(true), {
+        timeout: 1500,
+      });
+    } else {
+      timeoutId = window.setTimeout(() => setShouldInitializeController(true), 600);
+    }
+
+    return () => {
+      if (idleCallbackId !== undefined && typeof window.cancelIdleCallback === 'function') {
+        window.cancelIdleCallback(idleCallbackId);
+      }
+
+      if (timeoutId !== undefined) {
+        window.clearTimeout(timeoutId);
+      }
+    };
+  }, [spotifyUri]);
+
+  useEffect(() => {
     const hostElement = iframeHostRef.current;
 
-    if (!spotifyUri || !hostElement) {
+    if (!shouldInitializeController || !spotifyUri || !hostElement) {
       return;
     }
 
@@ -212,7 +245,7 @@ export function Spotify() {
       activeController?.destroy();
       hostElement.replaceChildren();
     };
-  }, [spotifyUri]);
+  }, [shouldInitializeController, spotifyUri]);
 
   if (isLoading) {
     return (
@@ -248,6 +281,7 @@ export function Spotify() {
       return;
     }
 
+    setShouldInitializeController(true);
     window.open(trackData.spotifyLink, '_blank', 'noopener,noreferrer');
   };
 

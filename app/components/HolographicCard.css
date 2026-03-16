@@ -11,10 +11,6 @@
   transition: transform 0.5s ease, box-shadow 0.2s ease;
   will-change: transform, filter;
   background-color: #040712;
-  background-image: var(--imageUrl);
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-position: 50% 50%;
   transform-origin: center;
 }
 

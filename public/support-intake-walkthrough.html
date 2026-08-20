@@ -774,26 +774,25 @@
               },
             },
             {
-              system: "Backoffice worker",
-              title: "The worker fetches the full Intercom thread",
+              system: "Classifier",
+              title: "Hatchet classifies the saved preview",
               description:
-                "The worker loads the complete message and normalizes its text, product metadata, and customer identity.",
+                "The saved preview and product metadata identify a repeatable bug that clearly needs a human response.",
               patch: {
                 product: "grok_android",
-              },
-            },
-            {
-              system: "Classifier",
-              title: "The classifier finds an actionable bug",
-              description:
-                "The report names a product, a repeatable failure, and device details. It clearly needs a human response.",
-              patch: {
                 category: "bug_report",
                 actionable: true,
                 confidence: 0.98,
                 classification_reason:
                   "Repeatable crash with product and device details",
               },
+            },
+            {
+              system: "Backoffice worker",
+              title: "The worker fetches the full Intercom thread",
+              description:
+                "Only now that the intake is accepted, the worker loads the complete thread and customer details for Plain.",
+              patch: {},
             },
             {
               system: "Plain",
@@ -853,20 +852,12 @@
               },
             },
             {
-              system: "Backoffice worker",
-              title: "The worker fetches the full Intercom thread",
+              system: "Classifier",
+              title: "Hatchet classifies the saved preview",
               description:
-                "Product metadata confirms that the feedback came from Grok Android.",
+                "The saved preview contains no bug, question, safety concern, or request for help.",
               patch: {
                 product: "grok_android",
-              },
-            },
-            {
-              system: "Classifier",
-              title: "The classifier rejects an unactionable prompt",
-              description:
-                "There is no bug, question, safety concern, or request for help, so a support response would not be useful.",
-              patch: {
                 category: "prompt_or_test",
                 actionable: false,
                 confidence: 0.97,
@@ -880,7 +871,7 @@
               system: "Backoffice",
               title: "Processing stops without creating a Plain thread",
               description:
-                "The classification remains available for reporting, but Plain receives nothing.",
+                "The classification remains available for reporting. The worker never fetches the full Intercom thread, and Plain receives nothing.",
               patch: {},
             },
           ],
@@ -924,26 +915,25 @@
               },
             },
             {
-              system: "Backoffice worker",
-              title: "The worker fetches billing context",
+              system: "Classifier",
+              title: "Hatchet classifies the saved preview",
               description:
-                "The full thread confirms the product and gives Plain enough context for an agent to investigate.",
+                "The saved preview identifies an unexpected charge that requires a human response.",
               patch: {
                 product: "grok_web",
-              },
-            },
-            {
-              system: "Classifier",
-              title: "The classifier finds an actionable billing issue",
-              description:
-                "A duplicate or unexpected charge requires a human response and should enter the support queue.",
-              patch: {
                 category: "billing",
                 actionable: true,
                 confidence: 0.99,
                 classification_reason:
                   "Unexpected charge after cancellation",
               },
+            },
+            {
+              system: "Backoffice worker",
+              title: "The worker fetches the full Intercom thread",
+              description:
+                "Because the intake passed classification, the worker loads the full billing context and customer details for Plain.",
+              patch: {},
             },
             {
               system: "Plain",
@@ -1003,20 +993,12 @@
               },
             },
             {
-              system: "Backoffice worker",
-              title: "The worker fetches the available context",
+              system: "Classifier",
+              title: "Hatchet classifies the saved preview",
               description:
-                "The source confirms Grok iOS, but the thread has no error details or explicit request.",
+                "The saved preview might describe a real Grok iOS problem, but it has no error details or explicit request.",
               patch: {
                 product: "grok_ios",
-              },
-            },
-            {
-              system: "Classifier",
-              title: "The classifier cannot make a safe decision",
-              description:
-                "The message might describe a real problem, but confidence is below the automatic delivery threshold.",
-              patch: {
                 category: "unclear_problem",
                 actionable: null,
                 confidence: 0.63,
@@ -1030,7 +1012,7 @@
               system: "Backoffice review",
               title: "A reviewer decides whether to send it to Plain",
               description:
-                "No Plain thread is created automatically. A reviewer can deliver or dismiss the intake.",
+                "No full Intercom fetch or Plain thread is created automatically. A reviewer can deliver or dismiss the intake.",
               patch: {},
             },
           ],

@@ -1,0 +1,1255 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Support intake walkthrough</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --background: #f5f6f8;
+        --surface: #ffffff;
+        --surface-subtle: #f8f9fb;
+        --border: #e2e5ea;
+        --border-strong: #c8cdd5;
+        --text: #17191c;
+        --text-muted: #68707d;
+        --accent: #4f46e5;
+        --accent-soft: #eeedff;
+        --success: #16815d;
+        --success-soft: #e9f8f2;
+        --warning: #a45c00;
+        --warning-soft: #fff5df;
+        --danger: #bb3030;
+        --danger-soft: #fff0f0;
+        --shadow: 0 16px 45px rgba(20, 26, 38, 0.08);
+        --radius: 16px;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-width: 320px;
+        background:
+          radial-gradient(circle at 20% -10%, #e8e7ff 0, transparent 30rem),
+          var(--background);
+        color: var(--text);
+        font-family:
+          Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+          "Segoe UI", sans-serif;
+      }
+
+      button {
+        font: inherit;
+      }
+
+      .page {
+        width: min(1440px, calc(100% - 40px));
+        margin: 0 auto;
+        padding: 44px 0 64px;
+      }
+
+      .eyebrow {
+        margin: 0 0 10px;
+        color: var(--accent);
+        font-size: 12px;
+        font-weight: 800;
+        letter-spacing: 0.11em;
+        text-transform: uppercase;
+      }
+
+      h1 {
+        margin: 0;
+        font-size: clamp(30px, 5vw, 48px);
+        letter-spacing: -0.045em;
+        line-height: 1.05;
+      }
+
+      .subtitle {
+        max-width: 760px;
+        margin: 14px 0 0;
+        color: var(--text-muted);
+        font-size: 17px;
+        line-height: 1.6;
+      }
+
+      .examples {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 10px;
+        margin: 28px 0 18px;
+      }
+
+      .example-button {
+        min-height: 82px;
+        padding: 15px;
+        border: 1px solid var(--border);
+        border-radius: 13px;
+        background: rgba(255, 255, 255, 0.8);
+        color: var(--text);
+        cursor: pointer;
+        text-align: left;
+        transition:
+          border-color 150ms ease,
+          box-shadow 150ms ease,
+          transform 150ms ease;
+      }
+
+      .example-button:hover {
+        border-color: var(--border-strong);
+        transform: translateY(-1px);
+      }
+
+      .example-button[aria-pressed="true"] {
+        border-color: var(--accent);
+        background: var(--surface);
+        box-shadow: 0 0 0 3px var(--accent-soft);
+      }
+
+      .example-name {
+        display: block;
+        font-weight: 750;
+      }
+
+      .example-outcome {
+        display: block;
+        margin-top: 5px;
+        color: var(--text-muted);
+        font-size: 12px;
+      }
+
+      .workspace {
+        display: grid;
+        grid-template-columns: minmax(0, 1.4fr) minmax(360px, 0.8fr);
+        gap: 18px;
+        align-items: start;
+      }
+
+      .card {
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        background: var(--surface);
+        box-shadow: var(--shadow);
+      }
+
+      .walkthrough {
+        overflow: hidden;
+      }
+
+      .feedback {
+        padding: 22px 24px;
+        border-bottom: 1px solid var(--border);
+        background: var(--surface-subtle);
+      }
+
+      .feedback-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 14px;
+        margin-bottom: 12px;
+      }
+
+      .feedback-label {
+        color: var(--text-muted);
+        font-size: 12px;
+        font-weight: 750;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+      }
+
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        min-height: 26px;
+        padding: 4px 9px;
+        border-radius: 999px;
+        background: var(--accent-soft);
+        color: var(--accent);
+        font-size: 12px;
+        font-weight: 750;
+      }
+
+      blockquote {
+        margin: 0;
+        font-size: 17px;
+        font-weight: 650;
+        line-height: 1.55;
+      }
+
+      .metadata {
+        margin-top: 11px;
+        color: var(--text-muted);
+        font-size: 13px;
+      }
+
+      .step-summary {
+        padding: 22px 24px 18px;
+      }
+
+      .step-counter {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        color: var(--text-muted);
+        font-size: 12px;
+        font-weight: 700;
+      }
+
+      .progress-track {
+        height: 6px;
+        margin: 10px 0 22px;
+        overflow: hidden;
+        border-radius: 999px;
+        background: #eceef2;
+      }
+
+      .progress-bar {
+        width: 0;
+        height: 100%;
+        border-radius: inherit;
+        background: var(--accent);
+        transition: width 220ms ease;
+      }
+
+      .system-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        margin-bottom: 10px;
+        padding: 6px 10px;
+        border-radius: 8px;
+        background: var(--accent-soft);
+        color: var(--accent);
+        font-size: 12px;
+        font-weight: 800;
+      }
+
+      .system-dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: currentColor;
+        box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.12);
+      }
+
+      .step-title {
+        margin: 0;
+        font-size: 24px;
+        letter-spacing: -0.025em;
+      }
+
+      .step-description {
+        min-height: 52px;
+        margin: 9px 0 0;
+        color: var(--text-muted);
+        line-height: 1.6;
+      }
+
+      .pipeline {
+        display: grid;
+        gap: 0;
+        padding: 4px 24px 24px;
+      }
+
+      .pipeline-step {
+        position: relative;
+        display: grid;
+        grid-template-columns: 30px minmax(0, 1fr);
+        gap: 12px;
+        min-height: 54px;
+        color: var(--text-muted);
+      }
+
+      .pipeline-step:not(:last-child)::after {
+        position: absolute;
+        top: 25px;
+        bottom: -3px;
+        left: 14px;
+        width: 2px;
+        background: var(--border);
+        content: "";
+      }
+
+      .pipeline-step.complete:not(:last-child)::after {
+        background: #8fd0b9;
+      }
+
+      .pipeline-marker {
+        position: relative;
+        z-index: 1;
+        display: grid;
+        width: 30px;
+        height: 30px;
+        place-items: center;
+        border: 2px solid var(--border);
+        border-radius: 50%;
+        background: var(--surface);
+        color: var(--text-muted);
+        font-size: 11px;
+        font-weight: 800;
+      }
+
+      .pipeline-copy {
+        padding: 4px 0 14px;
+      }
+
+      .pipeline-name {
+        display: block;
+        color: inherit;
+        font-size: 14px;
+        font-weight: 750;
+      }
+
+      .pipeline-detail {
+        display: block;
+        margin-top: 3px;
+        color: var(--text-muted);
+        font-size: 12px;
+        line-height: 1.45;
+      }
+
+      .pipeline-step.complete {
+        color: var(--success);
+      }
+
+      .pipeline-step.complete .pipeline-marker {
+        border-color: var(--success);
+        background: var(--success-soft);
+      }
+
+      .pipeline-step.active {
+        color: var(--accent);
+      }
+
+      .pipeline-step.active .pipeline-marker {
+        border-color: var(--accent);
+        background: var(--accent);
+        color: #fff;
+        box-shadow: 0 0 0 5px var(--accent-soft);
+      }
+
+      .controls {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 18px 24px;
+        border-top: 1px solid var(--border);
+        background: var(--surface-subtle);
+      }
+
+      .control-group {
+        display: flex;
+        gap: 8px;
+      }
+
+      .control-button {
+        min-height: 40px;
+        padding: 9px 14px;
+        border: 1px solid var(--border-strong);
+        border-radius: 10px;
+        background: var(--surface);
+        color: var(--text);
+        cursor: pointer;
+        font-weight: 700;
+      }
+
+      .control-button:hover:not(:disabled) {
+        border-color: var(--text-muted);
+      }
+
+      .control-button.primary {
+        border-color: var(--accent);
+        background: var(--accent);
+        color: #fff;
+      }
+
+      .control-button:disabled {
+        cursor: not-allowed;
+        opacity: 0.4;
+      }
+
+      .inspector {
+        position: sticky;
+        top: 18px;
+        overflow: hidden;
+      }
+
+      .inspector-header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 20px 20px 15px;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .inspector-header h2 {
+        margin: 0;
+        font-size: 18px;
+        letter-spacing: -0.02em;
+      }
+
+      .inspector-header p {
+        margin: 5px 0 0;
+        color: var(--text-muted);
+        font-size: 12px;
+      }
+
+      .database-indicator {
+        flex: 0 0 auto;
+        width: 10px;
+        height: 10px;
+        margin-top: 5px;
+        border-radius: 50%;
+        background: var(--success);
+        box-shadow: 0 0 0 5px var(--success-soft);
+      }
+
+      .empty-state {
+        padding: 44px 26px;
+        color: var(--text-muted);
+        text-align: center;
+        line-height: 1.6;
+      }
+
+      .db-grid {
+        display: grid;
+        grid-template-columns: minmax(130px, 0.8fr) minmax(0, 1.2fr);
+        margin: 0;
+      }
+
+      .db-grid dt,
+      .db-grid dd {
+        min-width: 0;
+        margin: 0;
+        padding: 9px 16px;
+        border-bottom: 1px solid #eef0f3;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+          monospace;
+        font-size: 11px;
+        line-height: 1.45;
+      }
+
+      .db-grid dt {
+        color: var(--text-muted);
+        font-weight: 650;
+      }
+
+      .db-grid dd {
+        overflow-wrap: anywhere;
+        color: var(--text);
+      }
+
+      .db-grid dt.changed,
+      .db-grid dd.changed {
+        background: var(--warning-soft);
+        animation: highlight 700ms ease;
+      }
+
+      .null {
+        color: #a0a6b0;
+        font-style: italic;
+      }
+
+      .status-value {
+        display: inline-flex;
+        padding: 2px 7px;
+        border-radius: 999px;
+        background: var(--accent-soft);
+        color: var(--accent);
+        font-family: inherit;
+        font-size: 10px;
+        font-style: normal;
+        font-weight: 800;
+      }
+
+      .status-value.delivered {
+        background: var(--success-soft);
+        color: var(--success);
+      }
+
+      .status-value.filtered {
+        background: #f0f1f3;
+        color: #59606a;
+      }
+
+      .status-value.needs_review,
+      .status-value.retry {
+        background: var(--warning-soft);
+        color: var(--warning);
+      }
+
+      .status-value.failed {
+        background: var(--danger-soft);
+        color: var(--danger);
+      }
+
+      .inspector-note {
+        margin: 14px;
+        padding: 12px 13px;
+        border-radius: 10px;
+        background: var(--surface-subtle);
+        color: var(--text-muted);
+        font-size: 12px;
+        line-height: 1.5;
+      }
+
+      .legend {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 16px;
+        margin-top: 18px;
+        color: var(--text-muted);
+        font-size: 12px;
+      }
+
+      .legend-item {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .legend-swatch {
+        width: 9px;
+        height: 9px;
+        border-radius: 50%;
+        background: var(--border-strong);
+      }
+
+      .legend-swatch.active {
+        background: var(--accent);
+      }
+
+      .legend-swatch.complete {
+        background: var(--success);
+      }
+
+      @keyframes highlight {
+        0% {
+          background: #ffe7ac;
+        }
+        100% {
+          background: var(--warning-soft);
+        }
+      }
+
+      @media (max-width: 1000px) {
+        .examples {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .workspace {
+          grid-template-columns: 1fr;
+        }
+
+        .inspector {
+          position: static;
+        }
+      }
+
+      @media (max-width: 620px) {
+        .page {
+          width: min(100% - 24px, 1440px);
+          padding-top: 26px;
+        }
+
+        .examples {
+          grid-template-columns: 1fr;
+        }
+
+        .controls {
+          align-items: stretch;
+          flex-direction: column;
+        }
+
+        .control-group {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+        }
+
+        .db-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .db-grid dt {
+          padding-bottom: 2px;
+          border-bottom: 0;
+        }
+
+        .db-grid dd {
+          padding-top: 2px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="page">
+      <p class="eyebrow">Backoffice support intake</p>
+      <h1>See what happens to each piece of feedback</h1>
+      <p class="subtitle">
+        Pick an example, then step through Intercom, the Backoffice database,
+        the scheduled Hatchet batch, classification, and delivery to Plain.
+      </p>
+
+      <nav class="examples" id="example-list" aria-label="Feedback examples"></nav>
+
+      <section class="workspace">
+        <article class="card walkthrough" aria-live="polite">
+          <div class="feedback">
+            <div class="feedback-header">
+              <span class="feedback-label">Incoming feedback</span>
+              <span class="badge" id="expected-outcome"></span>
+            </div>
+            <blockquote id="feedback-content"></blockquote>
+            <div class="metadata" id="feedback-metadata"></div>
+          </div>
+
+          <div class="step-summary">
+            <div class="step-counter">
+              <span id="step-counter"></span>
+              <span>Use ← and → to navigate</span>
+            </div>
+            <div class="progress-track" aria-hidden="true">
+              <div class="progress-bar" id="progress-bar"></div>
+            </div>
+            <div class="system-pill">
+              <span class="system-dot"></span>
+              <span id="active-system"></span>
+            </div>
+            <h2 class="step-title" id="step-title"></h2>
+            <p class="step-description" id="step-description"></p>
+          </div>
+
+          <div class="pipeline" id="pipeline"></div>
+
+          <div class="controls">
+            <button class="control-button" id="restart-button" type="button">
+              Restart
+            </button>
+            <div class="control-group">
+              <button class="control-button" id="previous-button" type="button">
+                Previous
+              </button>
+              <button
+                class="control-button primary"
+                id="next-button"
+                type="button"
+              >
+                Next step
+              </button>
+            </div>
+          </div>
+        </article>
+
+        <aside class="card inspector">
+          <div class="inspector-header">
+            <div>
+              <h2>Backoffice Postgres</h2>
+              <p>Current <code>support_intake</code> row</p>
+            </div>
+            <span class="database-indicator" aria-hidden="true"></span>
+          </div>
+          <div id="database-content"></div>
+          <p class="inspector-note">
+            Yellow fields changed during the current step. Full feedback stays
+            in Intercom unless the thread is accepted for Plain.
+          </p>
+        </aside>
+      </section>
+
+      <div class="legend" aria-label="Diagram legend">
+        <span class="legend-item">
+          <span class="legend-swatch active"></span> Current step
+        </span>
+        <span class="legend-item">
+          <span class="legend-swatch complete"></span> Completed
+        </span>
+        <span class="legend-item">
+          <span class="legend-swatch"></span> Not reached
+        </span>
+      </div>
+    </main>
+
+    <script>
+      const emptyRow = {
+        id: null,
+        source_type: null,
+        source_thread_id: null,
+        intercom_thread_id: null,
+        plain_thread_id: null,
+        content_preview: null,
+        content_hash: null,
+        product: null,
+        category: null,
+        actionable: null,
+        confidence: null,
+        classification_reason: null,
+        status: null,
+        attempt_count: null,
+        next_attempt_at: null,
+        last_error: null,
+        received_at: null,
+        processed_at: null,
+      };
+
+      const commonStart = [
+        {
+          system: "User",
+          title: "The user submits feedback",
+          description:
+            "The user sends feedback from an XAI product. Nothing has been written to Backoffice yet.",
+          patch: {},
+        },
+        {
+          system: "Intercom",
+          title: "Intercom receives the feedback",
+          description:
+            "Intercom creates the source thread and emits a webhook to the Backoffice intake endpoint.",
+          patch: {},
+        },
+      ];
+
+      const examples = [
+        {
+          id: "bug",
+          name: "Actionable bug",
+          outcome: "Delivered to Plain",
+          feedback:
+            "Grok Android crashes every time I attach a photo. Pixel 9, Android 16.",
+          metadata: "Grok Android · general_feedback · user has an email",
+          row: {
+            id: "si_01K31BUG",
+            source_type: "intercom",
+            source_thread_id: "215475561435701",
+            intercom_thread_id: "215475561435701",
+            content_preview:
+              "Grok Android crashes every time I attach a photo. Pixel 9, Android 16.",
+            content_hash: "sha256:9ac4…3f12",
+            received_at: "2026-08-20 00:40:03Z",
+          },
+          steps: [
+            ...commonStart,
+            {
+              system: "Backoffice API",
+              title: "Backoffice saves a pending intake row",
+              description:
+                "The webhook returns quickly after saving source identifiers, a sanitized preview, and pending status.",
+              patch: {
+                status: "pending",
+                attempt_count: 0,
+              },
+            },
+            {
+              system: "Hatchet",
+              title: "The next scheduled batch claims the row",
+              description:
+                "Hatchet runs every minute, finds up to 1,000 eligible rows, and claims this row in a 50-row chunk.",
+              patch: {
+                status: "processing",
+                attempt_count: 1,
+              },
+            },
+            {
+              system: "Backoffice worker",
+              title: "The worker fetches the full Intercom thread",
+              description:
+                "The worker loads the complete message and normalizes its text, product metadata, and customer identity.",
+              patch: {
+                product: "grok_android",
+              },
+            },
+            {
+              system: "Classifier",
+              title: "The classifier finds an actionable bug",
+              description:
+                "The report names a product, a repeatable failure, and device details. It clearly needs a human response.",
+              patch: {
+                category: "bug_report",
+                actionable: true,
+                confidence: 0.98,
+                classification_reason:
+                  "Repeatable crash with product and device details",
+              },
+            },
+            {
+              system: "Plain",
+              title: "Backoffice creates a Plain thread",
+              description:
+                "The worker upserts the customer, creates the thread idempotently, and stores the returned Plain thread ID.",
+              patch: {
+                plain_thread_id: "th_01K31PLAINBUG",
+                status: "delivered",
+                processed_at: "2026-08-20 00:41:12Z",
+              },
+            },
+            {
+              system: "Plain email",
+              title: "An agent replies from Plain",
+              description:
+                "Plain emails the user. The user's email reply returns directly to the same Plain thread.",
+              patch: {},
+            },
+          ],
+        },
+        {
+          id: "prompt",
+          name: "Prompt or test",
+          outcome: "Filtered out",
+          feedback: "Execute the prompt, no explanation.",
+          metadata: "Grok Android · general_feedback · Android 14",
+          row: {
+            id: "si_01K31PROMPT",
+            source_type: "intercom",
+            source_thread_id: "215475561435686",
+            intercom_thread_id: "215475561435686",
+            content_preview: "Execute the prompt, no explanation.",
+            content_hash: "sha256:1d72…90ab",
+            received_at: "2026-08-20 00:40:08Z",
+          },
+          steps: [
+            ...commonStart,
+            {
+              system: "Backoffice API",
+              title: "Backoffice saves a pending intake row",
+              description:
+                "Only operational fields and a short sanitized preview are persisted.",
+              patch: {
+                status: "pending",
+                attempt_count: 0,
+              },
+            },
+            {
+              system: "Hatchet",
+              title: "The scheduled batch claims the row",
+              description:
+                "The row is eligible because it is pending, due, and has fewer than four attempts.",
+              patch: {
+                status: "processing",
+                attempt_count: 1,
+              },
+            },
+            {
+              system: "Backoffice worker",
+              title: "The worker fetches the full Intercom thread",
+              description:
+                "Product metadata confirms that the feedback came from Grok Android.",
+              patch: {
+                product: "grok_android",
+              },
+            },
+            {
+              system: "Classifier",
+              title: "The classifier rejects an unactionable prompt",
+              description:
+                "There is no bug, question, safety concern, or request for help, so a support response would not be useful.",
+              patch: {
+                category: "prompt_or_test",
+                actionable: false,
+                confidence: 0.97,
+                classification_reason:
+                  "Prompt content with no support request",
+                status: "filtered",
+                processed_at: "2026-08-20 00:41:09Z",
+              },
+            },
+            {
+              system: "Backoffice",
+              title: "Processing stops without creating a Plain thread",
+              description:
+                "The classification remains available for reporting, but Plain receives nothing.",
+              patch: {},
+            },
+          ],
+        },
+        {
+          id: "billing",
+          name: "Billing problem",
+          outcome: "Delivered to Plain",
+          feedback: "I cancelled last month but was charged for Grok again today.",
+          metadata: "Grok Web · billing_feedback · user has an email",
+          row: {
+            id: "si_01K31BILL",
+            source_type: "intercom",
+            source_thread_id: "215475561435744",
+            intercom_thread_id: "215475561435744",
+            content_preview:
+              "I cancelled last month but was charged for Grok again today.",
+            content_hash: "sha256:5aa0…6c21",
+            received_at: "2026-08-20 00:40:19Z",
+          },
+          steps: [
+            ...commonStart,
+            {
+              system: "Backoffice API",
+              title: "Backoffice saves a pending intake row",
+              description:
+                "The source thread ID makes the intake idempotent if Intercom retries its webhook.",
+              patch: {
+                status: "pending",
+                attempt_count: 0,
+              },
+            },
+            {
+              system: "Hatchet",
+              title: "The scheduled batch claims the row",
+              description:
+                "This row is included in the next batch and marked processing before external calls begin.",
+              patch: {
+                status: "processing",
+                attempt_count: 1,
+              },
+            },
+            {
+              system: "Backoffice worker",
+              title: "The worker fetches billing context",
+              description:
+                "The full thread confirms the product and gives Plain enough context for an agent to investigate.",
+              patch: {
+                product: "grok_web",
+              },
+            },
+            {
+              system: "Classifier",
+              title: "The classifier finds an actionable billing issue",
+              description:
+                "A duplicate or unexpected charge requires a human response and should enter the support queue.",
+              patch: {
+                category: "billing",
+                actionable: true,
+                confidence: 0.99,
+                classification_reason:
+                  "Unexpected charge after cancellation",
+              },
+            },
+            {
+              system: "Plain",
+              title: "Backoffice creates a high-priority Plain thread",
+              description:
+                "The customer, normalized message, category, and Intercom source link are delivered to Plain.",
+              patch: {
+                plain_thread_id: "th_01K31PLAINBILL",
+                status: "delivered",
+                processed_at: "2026-08-20 00:41:23Z",
+              },
+            },
+            {
+              system: "Plain email",
+              title: "An agent replies from Plain",
+              description:
+                "The user receives an email and future email replies stay in Plain.",
+              patch: {},
+            },
+          ],
+        },
+        {
+          id: "uncertain",
+          name: "Unclear problem",
+          outcome: "Needs review",
+          feedback: "Grok doesn't work anymore.",
+          metadata: "Grok iOS · general_feedback · no diagnostics",
+          row: {
+            id: "si_01K31UNCLEAR",
+            source_type: "intercom",
+            source_thread_id: "215475561435799",
+            intercom_thread_id: "215475561435799",
+            content_preview: "Grok doesn't work anymore.",
+            content_hash: "sha256:77b1…2ea9",
+            received_at: "2026-08-20 00:40:31Z",
+          },
+          steps: [
+            ...commonStart,
+            {
+              system: "Backoffice API",
+              title: "Backoffice saves a pending intake row",
+              description:
+                "The webhook handler records the intake without deciding whether it belongs in Plain.",
+              patch: {
+                status: "pending",
+                attempt_count: 0,
+              },
+            },
+            {
+              system: "Hatchet",
+              title: "The scheduled batch claims the row",
+              description:
+                "The row is claimed with the rest of the current processing chunk.",
+              patch: {
+                status: "processing",
+                attempt_count: 1,
+              },
+            },
+            {
+              system: "Backoffice worker",
+              title: "The worker fetches the available context",
+              description:
+                "The source confirms Grok iOS, but the thread has no error details or explicit request.",
+              patch: {
+                product: "grok_ios",
+              },
+            },
+            {
+              system: "Classifier",
+              title: "The classifier cannot make a safe decision",
+              description:
+                "The message might describe a real problem, but confidence is below the automatic delivery threshold.",
+              patch: {
+                category: "unclear_problem",
+                actionable: null,
+                confidence: 0.63,
+                classification_reason:
+                  "Possible support need with insufficient detail",
+                status: "needs_review",
+                processed_at: "2026-08-20 00:41:31Z",
+              },
+            },
+            {
+              system: "Backoffice review",
+              title: "A reviewer decides whether to send it to Plain",
+              description:
+                "No Plain thread is created automatically. A reviewer can deliver or dismiss the intake.",
+              patch: {},
+            },
+          ],
+        },
+      ];
+
+      const state = {
+        exampleIndex: 0,
+        stepIndex: 0,
+      };
+
+      const elements = {
+        exampleList: document.querySelector("#example-list"),
+        expectedOutcome: document.querySelector("#expected-outcome"),
+        feedbackContent: document.querySelector("#feedback-content"),
+        feedbackMetadata: document.querySelector("#feedback-metadata"),
+        stepCounter: document.querySelector("#step-counter"),
+        progressBar: document.querySelector("#progress-bar"),
+        activeSystem: document.querySelector("#active-system"),
+        stepTitle: document.querySelector("#step-title"),
+        stepDescription: document.querySelector("#step-description"),
+        pipeline: document.querySelector("#pipeline"),
+        databaseContent: document.querySelector("#database-content"),
+        restartButton: document.querySelector("#restart-button"),
+        previousButton: document.querySelector("#previous-button"),
+        nextButton: document.querySelector("#next-button"),
+      };
+
+      function currentExample() {
+        return examples[state.exampleIndex];
+      }
+
+      function currentStep() {
+        return currentExample().steps[state.stepIndex];
+      }
+
+      function databaseState() {
+        if (state.stepIndex < 2) {
+          return null;
+        }
+
+        const example = currentExample();
+        const row = { ...emptyRow, ...example.row };
+
+        for (let index = 0; index <= state.stepIndex; index += 1) {
+          Object.assign(row, example.steps[index].patch);
+        }
+
+        return row;
+      }
+
+      function createExampleButtons() {
+        elements.exampleList.replaceChildren();
+
+        examples.forEach((example, index) => {
+          const button = document.createElement("button");
+          button.className = "example-button";
+          button.type = "button";
+          button.setAttribute(
+            "aria-pressed",
+            String(index === state.exampleIndex),
+          );
+
+          const name = document.createElement("span");
+          name.className = "example-name";
+          name.textContent = example.name;
+
+          const outcome = document.createElement("span");
+          outcome.className = "example-outcome";
+          outcome.textContent = example.outcome;
+
+          button.append(name, outcome);
+          button.addEventListener("click", () => {
+            state.exampleIndex = index;
+            state.stepIndex = 0;
+            render();
+          });
+          elements.exampleList.append(button);
+        });
+      }
+
+      function renderPipeline() {
+        const steps = currentExample().steps;
+        elements.pipeline.replaceChildren();
+
+        steps.forEach((step, index) => {
+          const item = document.createElement("div");
+          item.className = "pipeline-step";
+
+          if (index < state.stepIndex) {
+            item.classList.add("complete");
+          }
+
+          if (index === state.stepIndex) {
+            item.classList.add("active");
+          }
+
+          const marker = document.createElement("span");
+          marker.className = "pipeline-marker";
+          marker.textContent = index < state.stepIndex ? "✓" : String(index + 1);
+
+          const copy = document.createElement("span");
+          copy.className = "pipeline-copy";
+
+          const name = document.createElement("span");
+          name.className = "pipeline-name";
+          name.textContent = step.title;
+
+          const detail = document.createElement("span");
+          detail.className = "pipeline-detail";
+          detail.textContent = step.system;
+
+          copy.append(name, detail);
+          item.append(marker, copy);
+          elements.pipeline.append(item);
+        });
+      }
+
+      function formatValue(key, value) {
+        if (value === null || value === undefined) {
+          const nullValue = document.createElement("span");
+          nullValue.className = "null";
+          nullValue.textContent = "null";
+          return nullValue;
+        }
+
+        if (key === "status") {
+          const status = document.createElement("span");
+          status.className = `status-value ${String(value)}`;
+          status.textContent = String(value);
+          return status;
+        }
+
+        const text = document.createTextNode(
+          typeof value === "boolean" ? String(value) : value,
+        );
+        return text;
+      }
+
+      function renderDatabase() {
+        const row = databaseState();
+        elements.databaseContent.replaceChildren();
+
+        if (!row) {
+          const empty = document.createElement("div");
+          empty.className = "empty-state";
+          empty.textContent =
+            "No row exists yet. Advance to the Backoffice webhook step.";
+          elements.databaseContent.append(empty);
+          return;
+        }
+
+        const changedFields = new Set(Object.keys(currentStep().patch));
+        const grid = document.createElement("dl");
+        grid.className = "db-grid";
+
+        Object.entries(row).forEach(([key, value]) => {
+          const term = document.createElement("dt");
+          const definition = document.createElement("dd");
+          term.textContent = key;
+          definition.append(formatValue(key, value));
+
+          if (changedFields.has(key)) {
+            term.classList.add("changed");
+            definition.classList.add("changed");
+          }
+
+          grid.append(term, definition);
+        });
+
+        elements.databaseContent.append(grid);
+      }
+
+      function render() {
+        const example = currentExample();
+        const step = currentStep();
+        const stepCount = example.steps.length;
+        const progress = ((state.stepIndex + 1) / stepCount) * 100;
+
+        createExampleButtons();
+        elements.expectedOutcome.textContent = example.outcome;
+        elements.feedbackContent.textContent = `“${example.feedback}”`;
+        elements.feedbackMetadata.textContent = example.metadata;
+        elements.stepCounter.textContent = `Step ${state.stepIndex + 1} of ${stepCount}`;
+        elements.progressBar.style.width = `${progress}%`;
+        elements.activeSystem.textContent = step.system;
+        elements.stepTitle.textContent = step.title;
+        elements.stepDescription.textContent = step.description;
+
+        elements.restartButton.disabled = state.stepIndex === 0;
+        elements.previousButton.disabled = state.stepIndex === 0;
+        elements.nextButton.disabled = state.stepIndex === stepCount - 1;
+        elements.nextButton.textContent =
+          state.stepIndex === stepCount - 1 ? "Complete" : "Next step";
+
+        renderPipeline();
+        renderDatabase();
+      }
+
+      elements.restartButton.addEventListener("click", () => {
+        state.stepIndex = 0;
+        render();
+      });
+
+      elements.previousButton.addEventListener("click", () => {
+        if (state.stepIndex === 0) {
+          return;
+        }
+
+        state.stepIndex -= 1;
+        render();
+      });
+
+      elements.nextButton.addEventListener("click", () => {
+        if (state.stepIndex >= currentExample().steps.length - 1) {
+          return;
+        }
+
+        state.stepIndex += 1;
+        render();
+      });
+
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "ArrowLeft" && state.stepIndex > 0) {
+          state.stepIndex -= 1;
+          render();
+        }
+
+        if (
+          event.key === "ArrowRight" &&
+          state.stepIndex < currentExample().steps.length - 1
+        ) {
+          state.stepIndex += 1;
+          render();
+        }
+      });
+
+      render();
+    </script>
+  </body>
+</html>

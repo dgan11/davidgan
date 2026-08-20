@@ -109,6 +109,13 @@
         box-shadow: 0 0 0 3px var(--accent-soft);
       }
 
+      .example-button:focus-visible,
+      .control-button:focus-visible,
+      .pipeline-step:focus-visible {
+        outline: 3px solid var(--accent);
+        outline-offset: 3px;
+      }
+
       .example-name {
         display: block;
         font-weight: 750;
@@ -261,8 +268,20 @@
         display: grid;
         grid-template-columns: 30px minmax(0, 1fr);
         gap: 12px;
+        width: 100%;
         min-height: 54px;
+        padding: 0;
+        border: 0;
+        background: transparent;
         color: var(--text-muted);
+        cursor: pointer;
+        font: inherit;
+        text-align: left;
+      }
+
+      .pipeline-step:hover .pipeline-name {
+        text-decoration: underline;
+        text-underline-offset: 3px;
       }
 
       .pipeline-step:not(:last-child)::after {
@@ -928,7 +947,7 @@
             },
             {
               system: "Plain",
-              title: "Backoffice creates a high-priority Plain thread",
+              title: "Backoffice creates a Plain thread",
               description:
                 "The customer, normalized message, category, and Intercom source link are delivered to Plain.",
               patch: {
@@ -1098,8 +1117,14 @@
         elements.pipeline.replaceChildren();
 
         steps.forEach((step, index) => {
-          const item = document.createElement("div");
+          const item = document.createElement("button");
           item.className = "pipeline-step";
+          item.type = "button";
+          item.setAttribute("aria-label", `Go to step ${index + 1}: ${step.title}`);
+          item.addEventListener("click", () => {
+            state.stepIndex = index;
+            render();
+          });
 
           if (index < state.stepIndex) {
             item.classList.add("complete");
